@@ -1,0 +1,400 @@
+[{
+  "_id": {
+    "$oid": "65682842b8493e10e423e27f"
+  },
+  "title": "Plan project requirements",
+  "description": "Define project scope, features, and requirements",
+  "status": "completed",
+  "icon": "https://example.com/icons/project-plan.png",
+  "date": "2023-10-01",
+  "links": [
+    {
+      "name": "Docs",
+      "url": "https://example.com/project-plan-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/project-plan"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e280"
+  },
+  "title": "Set up React app",
+  "description": "Create a new React project and configure basic setup",
+  "status": "completed",
+  "icon": "https://example.com/icons/react-setup.png",
+  "date": "2023-10-03",
+  "links": [
+    {
+      "name": "Guide",
+      "url": "https://example.com/react-setup-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/react-app"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e281"
+  },
+  "title": "Implement basic UI with Tailwind CSS",
+  "description": "Design and create the basic user interface using Tailwind CSS",
+  "status": "completed",
+  "icon": "https://example.com/icons/tailwind-ui.png",
+  "date": "2023-10-05",
+  "links": [
+    {
+      "name": "Design",
+      "url": "https://example.com/tailwind-ui-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/tailwind-ui"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e282"
+  },
+  "title": "Set up Express server",
+  "description": "Initialize Express server for backend development",
+  "status": "completed",
+  "icon": "https://example.com/icons/express-setup.png",
+  "date": "2023-10-08",
+  "links": [
+    {
+      "name": "Docs",
+      "url": "https://example.com/express-setup-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/express-server"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e283"
+  },
+  "title": "Create MongoDB database schema",
+  "description": "Define database schema and models for MongoDB",
+  "status": "completed",
+  "icon": "https://example.com/icons/mongodb-schema.png",
+  "date": "2023-10-10",
+  "links": [
+    {
+      "name": "Schema",
+      "url": "https://example.com/mongodb-schema-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/mongodb-schema"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e284"
+  },
+  "title": "Implement user authentication (JWT)",
+  "description": "Set up user authentication using JSON Web Tokens (JWT)",
+  "status": "running",
+  "icon": "https://example.com/icons/jwt-auth.png",
+  "date": "2023-10-12",
+  "links": [
+    {
+      "name": "Setup",
+      "url": "https://example.com/jwt-auth-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/user-authentication"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e285"
+  },
+  "title": "Create API endpoints",
+  "description": "Develop RESTful API endpoints for CRUD operations",
+  "status": "running",
+  "icon": "https://example.com/icons/api-endpoints.png",
+  "date": "2023-10-15",
+  "links": [
+    {
+      "name": "Guide",
+      "url": "https://example.com/api-endpoints-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/api-endpoints"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e286"
+  },
+  "title": "Implement todo list functionality",
+  "description": "Develop features to manage todo list (CRUD)",
+  "status": "running",
+  "icon": "https://example.com/icons/todo-functionality.png",
+  "date": "2023-10-18",
+  "links": [
+    {
+      "name": "Features",
+      "url": "https://example.com/todo-functionality-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/todo-functionality"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e287"
+  },
+  "title": "Connect frontend with backend",
+  "description": "Integrate React frontend with Express backend",
+  "status": "running",
+  "icon": "https://example.com/icons/frontend-backend.png",
+  "date": "2023-10-20",
+  "links": [
+    {
+      "name": "Integration",
+      "url": "https://example.com/frontend-backend-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/frontend-backend"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e288"
+  },
+  "title": "Test API endpoints",
+  "description": "Perform thorough testing of API endpoints",
+  "status": "pending",
+  "icon": "https://example.com/icons/api-testing.png",
+  "date": "2023-10-22",
+  "links": [
+    {
+      "name": "Testing",
+      "url": "https://example.com/api-testing-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/api-testing"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e289"
+  },
+  "title": "Implement error handling",
+  "description": "Handle errors gracefully in the frontend and backend",
+  "status": "pending",
+  "icon": "https://example.com/icons/error-handling.png",
+  "date": "2023-10-25",
+  "links": [
+    {
+      "name": "Handling",
+      "url": "https://example.com/error-handling-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/error-handling"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28a"
+  },
+  "title": "Implement pagination or infinite scrolling",
+  "description": "Enable pagination or infinite scrolling for better UX",
+  "status": "pending",
+  "icon": "https://example.com/icons/pagination.png",
+  "date": "2023-10-27",
+  "links": [
+    {
+      "name": "Guide",
+      "url": "https://example.com/pagination-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/pagination"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28b"
+  },
+  "title": "Implement search feature",
+  "description": "Implement search feature to find tasks easily",
+  "status": "pending",
+  "icon": "https://example.com/icons/search-functionality.png",
+  "date": "2023-10-29",
+  "links": [
+    {
+      "name": "Feature",
+      "url": "https://example.com/search-functionality-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/search-functionality"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28c"
+  },
+  "title": "Refactor code",
+  "description": "Review and optimize code for better performance",
+  "status": "pending",
+  "icon": "https://example.com/icons/code-refactoring.png",
+  "date": "2023-11-01",
+  "links": [
+    {
+      "name": "Optimization",
+      "url": "https://example.com/code-refactoring-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/code-refactoring"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28d"
+  },
+  "title": "Implement user settings",
+  "description": "Allow users to modify preferences and settings",
+  "status": "pending",
+  "icon": "https://example.com/icons/user-settings.png",
+  "date": "2023-11-03",
+  "links": [
+    {
+      "name": "Preferences",
+      "url": "https://example.com/user-settings-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/user-settings"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28e"
+  },
+  "title": "Enhance UI with animations",
+  "description": "Enhance UI with interactive animations",
+  "status": "pending",
+  "icon": "https://example.com/icons/animations.png",
+  "date": "2023-11-05",
+  "links": [
+    {
+      "name": "Guide",
+      "url": "https://example.com/animations-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/animations"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e28f"
+  },
+  "title": "Perform security audit",
+  "description": "Conduct a security audit and address vulnerabilities",
+  "status": "pending",
+  "icon": "https://example.com/icons/security-audit.png",
+  "date": "2023-11-07",
+  "links": [
+    {
+      "name": "Audit",
+      "url": "https://example.com/security-audit-doc.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/security-audit"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e290"
+  },
+  "title": "Optimize database queries",
+  "description": "Improve database performance through query optimization",
+  "status": "pending",
+  "icon": "https://example.com/icons/db-optimization.png",
+  "date": "2023-11-09",
+  "links": [
+    {
+      "name": "Optimization",
+      "url": "https://example.com/db-optimization-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/db-optimization"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e291"
+  },
+  "title": "Documentation and final testing",
+  "description": "Create documentation and perform final testing",
+  "status": "pending",
+  "icon": "https://example.com/icons/final-doc-testing.png",
+  "date": "2023-11-11",
+  "links": [
+    {
+      "name": "Guide",
+      "url": "https://example.com/final-doc-testing-guide.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/final-doc-testing"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "65682842b8493e10e423e292"
+  },
+  "title": "Deployment",
+  "description": "Deploy the application to a hosting platform",
+  "status": "pending",
+  "icon": "https://example.com/icons/deployment.png",
+  "date": "2023-11-13",
+  "links": [
+    {
+      "name": "Instructions",
+      "url": "https://example.com/deployment-instructions.pdf"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/deployment-repo"
+    }
+  ]
+}]
