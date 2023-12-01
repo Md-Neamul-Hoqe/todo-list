@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useGetTasks from "../../Hooks/useGetTasks";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 
-const Home = () => {
+const History = () => {
   const axios = useAxiosHook();
   const headings = (
     <tr>
@@ -23,7 +23,7 @@ const Home = () => {
   // console.log(DateOfToDay);
   /* TODO: use hook - dynamic url both all / a todo */
 
-  const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
+  const [todoList, isPending, isLoading, refetch] = useGetTasks("completed");
 
   // console.log(moment().hours());
   // console.log(moment().date());
@@ -33,7 +33,7 @@ const Home = () => {
       <h2
         className="text-5xl font-mono font-semibold text-center my-10"
         style={{ fontVariant: "small-caps" }}>
-        Conquer Your To-Do List
+        Conquered To-Do List
       </h2>
 
       <div>
@@ -62,16 +62,7 @@ const Home = () => {
                           {moment(todo?.date).calendar(null, {
                             sameDay: function (now) {
                               if (this.isAfter(now)) {
-                                return (
-                                  <span
-                                    className={`${
-                                      todo?.status === "running"
-                                        ? "text-success font-bold"
-                                        : ""
-                                    }`}>
-                                    {"[Will Happen Today]"}
-                                  </span>
-                                );
+                                return "[Will Happen Today]";
                               } else {
                                 axios
                                   .patch(`/update-tasks/${todo?._id}`, {
@@ -129,4 +120,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default History;

@@ -6,7 +6,7 @@
   "description": "Define project scope, features, and requirements",
   "status": "completed",
   "icon": "https://example.com/icons/project-plan.png",
-  "date": "2023-10-01",
+  "date": "2023-10-01T13:03",
   "links": [
     {
       "name": "Docs",
@@ -26,7 +26,7 @@
   "description": "Create a new React project and configure basic setup",
   "status": "completed",
   "icon": "https://example.com/icons/react-setup.png",
-  "date": "2023-10-03",
+  "date": "2023-10-03T13:03",
   "links": [
     {
       "name": "Guide",
@@ -46,7 +46,7 @@
   "description": "Design and create the basic user interface using Tailwind CSS",
   "status": "completed",
   "icon": "https://example.com/icons/tailwind-ui.png",
-  "date": "2023-10-05",
+  "date": "2023-10-05T13:03",
   "links": [
     {
       "name": "Design",
@@ -66,7 +66,7 @@
   "description": "Initialize Express server for backend development",
   "status": "completed",
   "icon": "https://example.com/icons/express-setup.png",
-  "date": "2023-10-08",
+  "date": "2023-10-08T13:03",
   "links": [
     {
       "name": "Docs",
@@ -86,7 +86,7 @@
   "description": "Define database schema and models for MongoDB",
   "status": "completed",
   "icon": "https://example.com/icons/mongodb-schema.png",
-  "date": "2023-10-10",
+  "date": "2023-10-10T13:03",
   "links": [
     {
       "name": "Schema",
@@ -106,7 +106,7 @@
   "description": "Set up user authentication using JSON Web Tokens (JWT)",
   "status": "running",
   "icon": "https://example.com/icons/jwt-auth.png",
-  "date": "2023-10-12",
+  "date": "2023-10-12T13:03",
   "links": [
     {
       "name": "Setup",
@@ -126,7 +126,7 @@
   "description": "Develop RESTful API endpoints for CRUD operations",
   "status": "running",
   "icon": "https://example.com/icons/api-endpoints.png",
-  "date": "2023-10-15",
+  "date": "2023-10-15T13:03",
   "links": [
     {
       "name": "Guide",
@@ -146,7 +146,7 @@
   "description": "Develop features to manage todo list (CRUD)",
   "status": "running",
   "icon": "https://example.com/icons/todo-functionality.png",
-  "date": "2023-10-18",
+  "date": "2023-10-18T13:03",
   "links": [
     {
       "name": "Features",
@@ -166,7 +166,7 @@
   "description": "Integrate React frontend with Express backend",
   "status": "running",
   "icon": "https://example.com/icons/frontend-backend.png",
-  "date": "2023-10-20",
+  "date": "2023-10-20T13:03",
   "links": [
     {
       "name": "Integration",
@@ -186,7 +186,7 @@
   "description": "Perform thorough testing of API endpoints",
   "status": "pending",
   "icon": "https://example.com/icons/api-testing.png",
-  "date": "2023-10-22",
+  "date": "2023-10-22T13:03",
   "links": [
     {
       "name": "Testing",
@@ -206,7 +206,7 @@
   "description": "Handle errors gracefully in the frontend and backend",
   "status": "pending",
   "icon": "https://example.com/icons/error-handling.png",
-  "date": "2023-10-25",
+  "date": "2023-10-25T13:03",
   "links": [
     {
       "name": "Handling",
@@ -226,7 +226,7 @@
   "description": "Enable pagination or infinite scrolling for better UX",
   "status": "pending",
   "icon": "https://example.com/icons/pagination.png",
-  "date": "2023-10-27",
+  "date": "2023-10-27T13:03",
   "links": [
     {
       "name": "Guide",
@@ -246,7 +246,7 @@
   "description": "Implement search feature to find tasks easily",
   "status": "pending",
   "icon": "https://example.com/icons/search-functionality.png",
-  "date": "2023-10-29",
+  "date": "2023-10-29T13:03",
   "links": [
     {
       "name": "Feature",
@@ -266,7 +266,7 @@
   "description": "Review and optimize code for better performance",
   "status": "pending",
   "icon": "https://example.com/icons/code-refactoring.png",
-  "date": "2023-11-01",
+  "date": "2023-11-01T13:03",
   "links": [
     {
       "name": "Optimization",
@@ -286,7 +286,7 @@
   "description": "Allow users to modify preferences and settings",
   "status": "pending",
   "icon": "https://example.com/icons/user-settings.png",
-  "date": "2023-11-03",
+  "date": "2023-11-03T13:03",
   "links": [
     {
       "name": "Preferences",
@@ -306,7 +306,7 @@
   "description": "Enhance UI with interactive animations",
   "status": "pending",
   "icon": "https://example.com/icons/animations.png",
-  "date": "2023-11-05",
+  "date": "2023-11-05T13:03",
   "links": [
     {
       "name": "Guide",
@@ -326,7 +326,7 @@
   "description": "Conduct a security audit and address vulnerabilities",
   "status": "pending",
   "icon": "https://example.com/icons/security-audit.png",
-  "date": "2023-11-07",
+  "date": "2023-11-07T13:03",
   "links": [
     {
       "name": "Audit",
@@ -346,7 +346,7 @@
   "description": "Improve database performance through query optimization",
   "status": "pending",
   "icon": "https://example.com/icons/db-optimization.png",
-  "date": "2023-11-09",
+  "date": "2023-11-09T13:03",
   "links": [
     {
       "name": "Optimization",
@@ -366,7 +366,7 @@
   "description": "Create documentation and perform final testing",
   "status": "pending",
   "icon": "https://example.com/icons/final-doc-testing.png",
-  "date": "2023-11-11",
+  "date": "2023-11-11T13:03",
   "links": [
     {
       "name": "Guide",
@@ -386,7 +386,7 @@
   "description": "Deploy the application to a hosting platform",
   "status": "pending",
   "icon": "https://example.com/icons/deployment.png",
-  "date": "2023-11-13",
+  "date": "2023-11-13T13:03",
   "links": [
     {
       "name": "Instructions",

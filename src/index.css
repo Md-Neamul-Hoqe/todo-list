@@ -26,3 +26,7 @@ a.active {
 .react-tabs__tab--selected {
   @apply text-yellow-600 font-bold underline underline-offset-8 !important;
 }
+
+.contentCenter{
+  @apply flex justify-center items-center;
+}
