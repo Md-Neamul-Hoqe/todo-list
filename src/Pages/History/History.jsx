@@ -6,8 +6,10 @@ import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 import useGetTasks from "../../Hooks/useGetTasks";
 import useAxiosHook from "../../Hooks/useAxiosHook";
+import useAuth from "../../Hooks/useAuth";
 
 const History = () => {
+  const { handleDeleteTask } = useAuth();
   const axios = useAxiosHook();
   const headings = (
     <tr>
@@ -85,7 +87,9 @@ const History = () => {
                           {/* {moment().to(todo?.date)} */}
                         </td>
                         <th>
-                          <button className="btn btn-ghost btn-xs text-xl text-error">
+                          <button
+                            onClick={() => handleDeleteTask(todo?._id)}
+                            className="btn btn-ghost btn-xs text-xl text-error">
                             <FaTrashCan />
                           </button>
                           <Link

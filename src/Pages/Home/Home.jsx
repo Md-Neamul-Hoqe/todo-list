@@ -6,9 +6,13 @@ import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 import useGetTasks from "../../Hooks/useGetTasks";
 import useAxiosHook from "../../Hooks/useAxiosHook";
+import { MdAddCircleOutline } from "react-icons/md";
+import useAuth from "../../Hooks/useAuth";
 
 const Home = () => {
+  const { handleDeleteTask } = useAuth();
   const axios = useAxiosHook();
+
   const headings = (
     <tr>
       <th>#</th>
@@ -19,14 +23,13 @@ const Home = () => {
     </tr>
   );
 
-  // const DateOfToDay = moment().format("YYYY-MM-DDTHH:mm");
-  // console.log(DateOfToDay);
   /* TODO: use hook - dynamic url both all / a todo */
 
   const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
 
-  // console.log(moment().hours());
-  // console.log(moment().date());
+  const nextDayNotification = (
+    <span className="text-orange-700 font-bold">[Tomorrow]</span>
+  );
 
   return (
     <div>
@@ -40,7 +43,12 @@ const Home = () => {
         {!isPending && !isLoading ? (
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
-              <div className="overflow-x-auto md:mx-10">
+              <div className="overflow-x-auto md:mx-10 text-right">
+                <Link
+                  to="/add-new-task"
+                  className="btn bg-green-700 text-white text-sm mb-2">
+                  <MdAddCircleOutline /> New Task
+                </Link>
                 <table className="table table-zebra-zebra">
                   {/* head */}
                   <thead>{headings}</thead>
@@ -57,35 +65,50 @@ const Home = () => {
                             "dddd, MMMM D, YY, h:mm a"
                           )}
                         </td>
-                        <td>
+                        <td
+                          className={
+                            todo?.status === "running"
+                              ? "text-green-700 font-semibold"
+                              : ""
+                          }>
                           {todo?.status} <br />
                           {moment(todo?.date).calendar(null, {
                             sameDay: function (now) {
                               if (this.isAfter(now)) {
-                                return (
-                                  <span
-                                    className={`${
-                                      todo?.status === "running"
-                                        ? "text-success font-bold"
-                                        : ""
-                                    }`}>
-                                    {"[Will Happen Today]"}
-                                  </span>
-                                );
+                                /* change status to pending to running */
+                                axios
+                                  .patch(`/update-tasks/${todo?._id}`, {
+                                    status: "running",
+                                  })
+                                  .then((res) => {
+                                    console.log(res.data);
+                                    refetch();
+                                    return (
+                                      <span
+                                        className={`${
+                                          todo?.status === "running"
+                                            ? "text-success font-bold"
+                                            : ""
+                                        }`}>
+                                        {"[Will Happen Today]"}
+                                      </span>
+                                    );
+                                  });
                               } else {
+                                /* change status running to completed */
                                 axios
                                   .patch(`/update-tasks/${todo?._id}`, {
                                     status: "completed",
                                   })
                                   .then((res) => {
-                                    refetch();
                                     console.log(res.data);
-
-                                    return "[Happened Today]";
+                                    return refetch();
                                   });
                               }
                             },
-                            nextDay: "[Tomorrow]",
+                            nextDay: () => {
+                              nextDayNotification;
+                            },
                             nextWeek: "dddd",
                             lastDay: "[Yesterday]",
                             lastWeek: "[Last] dddd",
@@ -94,7 +117,9 @@ const Home = () => {
                           {/* {moment().to(todo?.date)} */}
                         </td>
                         <th>
-                          <button className="btn btn-ghost btn-xs text-xl text-error">
+                          <button
+                            onClick={() => handleDeleteTask(todo?._id)}
+                            className="btn btn-ghost btn-xs text-xl text-error">
                             <FaTrashCan />
                           </button>
                           <Link

@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
-  const authInfo = {};
+  const handleDeleteTask = (id) => {
+    console.log(id);
+  };
+
+  const authInfo = { handleDeleteTask };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

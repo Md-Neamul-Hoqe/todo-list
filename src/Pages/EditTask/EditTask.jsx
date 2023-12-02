@@ -6,6 +6,7 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 import useGetTasks from "../../Hooks/useGetTasks";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 const EditTask = () => {
   const axiosSecure = useAxiosHook();
@@ -14,17 +15,6 @@ const EditTask = () => {
   const task = useLoaderData();
 
   const navigate = useNavigate();
-  // console.log(task?.date);
-
-  // const intervalRunning = setInterval(() => {
-  //   console.log(todoList);
-  // }, 1000);
-
-  // if (todoList) return intervalRunning();
-
-  //  const timeIsNow = moment().calendar("yyyy-MM-DDThh:mm")
-  // const timeIsNow = moment().format("yyyy-MM-DDThh:mm");
-  // console.log(moment(timeIsNow).toNow(true));
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
@@ -69,6 +59,9 @@ const EditTask = () => {
 
   return (
     <div className="mx-10">
+      <h1 className="text-5xl font-mono font-semibold text-center my-10">
+        Edit The Task
+      </h1>
       {Object?.keys(task) ? (
         Object?.keys(task)?.length > 0 ? (
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -77,7 +70,10 @@ const EditTask = () => {
                 <span className="label-text">Title</span>
               </label>
               <input
-                {...register("title", { required: true, maxLength: 40 })}
+                defaultValue={task?.title}
+                {...register("title", {
+                  maxLength: 100,
+                })}
                 type="text"
                 placeholder="Set a clear and understandable title."
                 className="input input-bordered"
@@ -103,13 +99,15 @@ const EditTask = () => {
                 type="datetime-local"
                 placeholder="Set time"
                 className="input input-bordered"
-                {...register("date", { required: true })}
+                {...register("date", {
+                  min: moment().min(moment().startOf("second")),
+                })}
               />
             </div>
             <div className="form-control">
               <input
                 type="submit"
-                className="input input-bordered"
+                className="my-5 btn bg-green-700 text-white"
                 value={"Submit"}
               />
             </div>
