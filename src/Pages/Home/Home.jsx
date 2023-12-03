@@ -8,28 +8,28 @@ import useGetTasks from "../../Hooks/useGetTasks";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 import { MdAddCircleOutline } from "react-icons/md";
 import useAuth from "../../Hooks/useAuth";
+import SelectStatus from "../../components/SelectStatus";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const Home = () => {
-  const { handleDeleteTask } = useAuth();
+  const { handleDeleteTask, notification, headings } = useAuth();
+
   const axios = useAxiosHook();
 
-  const headings = (
-    <tr>
-      <th>#</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  );
+  /* Notify someone about their tasks for today. */
+  useEffect(() => {
+    if (notification) {
+      Swal.fire({
+        icon: "info",
+        html: notification,
+        showConfirmButton: true,
+      });
+    }
+  }, [notification]);
 
-  /* TODO: use hook - dynamic url both all / a todo */
 
   const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
-
-  const nextDayNotification = (
-    <span className="text-orange-700 font-bold">[Tomorrow]</span>
-  );
 
   return (
     <div>
@@ -53,83 +53,133 @@ const Home = () => {
                   {/* head */}
                   <thead>{headings}</thead>
                   <tbody>
-                    {todoList?.map((todo, index) => (
-                      <tr key={todo?._id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <div className="font-bold">{todo?.title}</div>
-                        </td>
-                        <td>{todo?.description}</td>
-                        <td>
-                          {moment(todo?.date).format(
-                            "dddd, MMMM D, YY, h:mm a"
-                          )}
-                        </td>
-                        <td
-                          className={
-                            todo?.status === "running"
-                              ? "text-green-700 font-semibold"
-                              : ""
-                          }>
-                          {todo?.status} <br />
-                          {moment(todo?.date).calendar(null, {
-                            sameDay: function (now) {
-                              if (this.isAfter(now)) {
-                                /* change status to pending to running */
-                                axios
-                                  .patch(`/update-tasks/${todo?._id}`, {
-                                    status: "running",
-                                  })
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    refetch();
-                                    return (
-                                      <span
-                                        className={`${
-                                          todo?.status === "running"
-                                            ? "text-success font-bold"
-                                            : ""
-                                        }`}>
-                                        {"[Will Happen Today]"}
-                                      </span>
-                                    );
-                                  });
-                              } else {
-                                /* change status running to completed */
-                                axios
-                                  .patch(`/update-tasks/${todo?._id}`, {
-                                    status: "completed",
-                                  })
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    return refetch();
-                                  });
-                              }
-                            },
-                            nextDay: () => {
-                              nextDayNotification;
-                            },
-                            nextWeek: "dddd",
-                            lastDay: "[Yesterday]",
-                            lastWeek: "[Last] dddd",
-                            sameElse: "DD/MM/YYYY",
-                          })}
-                          {/* {moment().to(todo?.date)} */}
-                        </td>
-                        <th>
-                          <button
-                            onClick={() => handleDeleteTask(todo?._id)}
-                            className="btn btn-ghost btn-xs text-xl text-error">
-                            <FaTrashCan />
-                          </button>
-                          <Link
-                            to={`/manage-task/${todo?._id}`}
-                            className="btn btn-ghost btn-xs text-xl text-info">
-                            <FaEdit />
-                          </Link>
-                        </th>
-                      </tr>
-                    ))}
+                    {todoList?.map(
+                      ({ _id, title, description, status, date }, index) => (
+                        <tr key={_id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <div className="font-bold">{title}</div>
+                          </td>
+                          <td>{description}</td>
+                          <td>
+                            {moment(date).format("dddd, MMMM D, YY, h:mm a")}
+                          </td>
+                          <td
+                            className={
+                              status === "running"
+                                ? "text-green-700 font-semibold"
+                                : ""
+                            }>
+                            <SelectStatus
+                              id={_id}
+                              defaultValue={{
+                                value: status,
+                                label:
+                                  status.charAt(0).toUpperCase() +
+                                  status.slice(1),
+                              }}
+                            />{" "}
+                            <br />
+                            {moment(date).calendar(null, {
+                              sameDay: function (now) {
+                                if (this.isAfter(now)) {
+                                  /* change status from pending to running */
+                                  axios
+                                    .patch(`/update-tasks/${_id}`, {
+                                      status: "running",
+                                    })
+                                    .then((res) => {
+                                      refetch();
+                                      if (res?.data?.modifiedCount) {
+                                        const Toast = Swal.mixin({
+                                          toast: true,
+                                          position: "top-end",
+                                          showConfirmButton: false,
+                                          timer: 2000,
+                                          timerProgressBar: true,
+                                          didOpen: (toast) => {
+                                            toast.addEventListener(
+                                              "mouseenter",
+                                              Swal.stopTimer
+                                            );
+                                            toast.addEventListener(
+                                              "mouseleave",
+                                              Swal.resumeTimer
+                                            );
+                                          },
+                                        });
+
+                                        Toast.fire({
+                                          icon: "info",
+                                          title: `'${title}' is now running task.`,
+                                        });
+
+                                        return "[Will Happen Today]";
+                                      }
+                                    });
+                                } else {
+                                  /* change status running to completed */
+                                  axios
+                                    .patch(`/update-tasks/${_id}`, {
+                                      status: "completed",
+                                    })
+                                    .then((res) => {
+                                      refetch();
+                                      if (res?.data?.modifiedCount) {
+                                        const Toast = Swal.mixin({
+                                          toast: true,
+                                          position: "top-end",
+                                          showConfirmButton: false,
+                                          timer: 2000,
+                                          timerProgressBar: true,
+                                          didOpen: (toast) => {
+                                            toast.addEventListener(
+                                              "mouseenter",
+                                              Swal.stopTimer
+                                            );
+                                            toast.addEventListener(
+                                              "mouseleave",
+                                              Swal.resumeTimer
+                                            );
+                                          },
+                                        });
+
+                                        Toast.fire({
+                                          icon: "info",
+                                          title: `'${title}' is completed.`,
+                                        });
+
+                                        return "[Will Happen Today]";
+                                      }
+                                    });
+                                }
+                              },
+                              nextDay: "[Tomorrow]",
+                              nextWeek: "dddd",
+                              lastDay: "[Yesterday]",
+                              lastWeek: "[Last] dddd",
+                              sameElse: "DD/MM/YYYY",
+                            })}
+                            {/* {moment().to(date)} */}
+                          </td>
+                          <th>
+                            <button
+                              onClick={() => {
+                                console.log(title);
+                                return handleDeleteTask(_id, refetch);
+                              }}
+                              className="btn btn-ghost btn-xs text-xl text-error">
+                              <FaTrashCan />
+                            </button>
+                            <Link
+                              to={`/manage-task/${_id}`}
+                              className="btn btn-ghost btn-xs text-xl text-info">
+                              <FaEdit />
+                            </Link>
+                          </th>
+                        </tr>
+                      )
+                    )}
                   </tbody>
                   {/* foot */}
                   <tfoot>{headings}</tfoot>

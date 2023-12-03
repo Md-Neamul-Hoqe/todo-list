@@ -9,26 +9,11 @@ import useAxiosHook from "../../Hooks/useAxiosHook";
 import useAuth from "../../Hooks/useAuth";
 
 const History = () => {
-  const { handleDeleteTask } = useAuth();
+  const { handleDeleteTask, headings } = useAuth();
   const axios = useAxiosHook();
-  const headings = (
-    <tr>
-      <th>#</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  );
 
-  // const DateOfToDay = moment().format("YYYY-MM-DDTHH:mm");
-  // console.log(DateOfToDay);
-  /* TODO: use hook - dynamic url both all / a todo */
 
   const [todoList, isPending, isLoading, refetch] = useGetTasks("completed");
-
-  // console.log(moment().hours());
-  // console.log(moment().date());
 
   return (
     <div>
@@ -88,7 +73,9 @@ const History = () => {
                         </td>
                         <th>
                           <button
-                            onClick={() => handleDeleteTask(todo?._id)}
+                            onClick={() => {
+                              return handleDeleteTask(todo?._id, refetch);
+                            }}
                             className="btn btn-ghost btn-xs text-xl text-error">
                             <FaTrashCan />
                           </button>

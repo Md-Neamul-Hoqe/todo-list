@@ -1,6 +1,5 @@
 import axios from "axios";
-// import useAuth from "./useAuth";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const axiosInstance = axios.create({
@@ -8,12 +7,8 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-/* TODO: use interceptors */
-
 const useAxiosHook = () => {
 
-  const navigate = useNavigate();
-  // console.log(location);
   axiosInstance.interceptors.request.use(
     (config) => {
       return config;
@@ -29,9 +24,8 @@ const useAxiosHook = () => {
       // console.log("response: ", err);
       if (err?.response?.status === 401 || err?.response?.status === 403) {
         console.error(err?.response);
-
-
-        navigate("/credentials/login");
+        
+        Navigate("/credentials/login")
       } else if (err?.response?.status === 400) {
         console.error(err?.response);
         Swal.fire({

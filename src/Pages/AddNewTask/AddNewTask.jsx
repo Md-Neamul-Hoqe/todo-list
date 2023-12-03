@@ -32,29 +32,43 @@ const AddNewTask = () => {
       axiosSecure
         .post(`/create-task`, newTask)
         .then((res) => {
-          if (res?.data?.modifiedCount) {
+          if (res?.data?.insertedId) {
             refetch();
 
             console.log(res?.data);
 
             Swal.fire({
               icon: "success",
-              title: "Schedule Updated.",
+              title: "Schedule Added.",
               showConfirmButton: true,
             });
 
             return navigate("/");
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: error?.message,
+            showConfirmButton: true,
+          });
+        });
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
     }
   };
 
   return (
     <div className="mx-10">
-        <h1 className="text-5xl font-mono font-semibold text-center my-10">Add A New Task</h1>
+      <h1 className="text-5xl font-mono font-semibold text-center my-10">
+        Add A New Task
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-control">
           <label className="label">

@@ -2,11 +2,10 @@
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-// import moment from "moment";
+import moment from "moment";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 import useGetTasks from "../../Hooks/useGetTasks";
 import Swal from "sweetalert2";
-import moment from "moment";
 
 const EditTask = () => {
   const axiosSecure = useAxiosHook();
@@ -32,6 +31,8 @@ const EditTask = () => {
     const updatedTodo = { title, description, date, status: "pending" };
 
     console.log(updatedTodo);
+
+    // return <UpdateTask id={id} updatedTask={updatedTodo} />;
 
     try {
       axiosSecure
@@ -100,7 +101,7 @@ const EditTask = () => {
                 placeholder="Set time"
                 className="input input-bordered"
                 {...register("date", {
-                  min: moment().min(moment().startOf("second")),
+                  min: moment.min(moment().startOf("second")),
                 })}
               />
             </div>

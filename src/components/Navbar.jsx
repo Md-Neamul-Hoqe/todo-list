@@ -1,4 +1,7 @@
+import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAxiosHook from "../Hooks/useAxiosHook";
 
 const Navbar = () => {
   const NavLinks = (
@@ -11,6 +14,39 @@ const Navbar = () => {
       </li>
     </>
   );
+
+  const axiosSecure = useAxiosHook();
+
+  const { handleSubmit, register } = useForm();
+
+  const onSubmit = (data) => {
+    const { search } = data;
+
+    console.log(search);
+
+    try {
+      axiosSecure
+        .post(`/search?search=${search}`)
+        .then((res) => {
+          console.log(res?.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: error?.message,
+            showConfirmButton: true,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
+    }
+  };
 
   return (
     <nav className="navbar bg-base-100">
@@ -38,24 +74,39 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1 hidden lg:flex">{NavLinks}</ul>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-2xl font-serif">Todo</a>
+        <a className="btn btn-ghost text-2xl font-serif">To-Do</a>
       </div>
       <div className="navbar-end">
-        <button className="btn btn-ghost btn-circle">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        <form className="flex relative " onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text sr-only">Search by title</span>
+            </label>
+            <input
+              {...register("search")}
+              type="text"
+              placeholder="Search by title..."
+              className="input input-bordered"
             />
-          </svg>
-        </button>
+          </div>
+
+          <button className="btn btn-ghost btn-circle absolute right-0 top-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+        </form>
+
         <button className="btn btn-ghost btn-circle">
           <div className="indicator">
             <svg

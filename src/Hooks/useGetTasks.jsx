@@ -5,7 +5,7 @@ const useGetTasks = (status = "all") => {
   const axiosSecure = useAxiosHook();
   const api = status === "completed" ? "/completed-tasks" : "/tasks";
 
-  console.log(!status, api);
+  // console.log(!status, api);
 
   const {
     data: todoList = [],
@@ -17,7 +17,7 @@ const useGetTasks = (status = "all") => {
     queryFn: async () => {
       const result = await axiosSecure.get(api);
 
-      console.log(result?.data);
+      // console.log(result?.data);
       return result?.data;
     },
   });
