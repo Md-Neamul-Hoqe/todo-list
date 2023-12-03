@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [notification, setNotification] = useState("");
+  const [searchResult, setSearchResult] = useState("");
   const axios = useAxiosHook();
   const headings = (
     <tr>
@@ -81,7 +82,7 @@ const AuthProvider = ({ children }) => {
     handleDeleteTask,
     notification,
     setNotification,
-    headings,
+    headings,searchResult, setSearchResult
   };
 
   return (

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosHook from "../Hooks/useAxiosHook";
+import useAuth from "../Hooks/useAuth";
 
 const Navbar = () => {
   const NavLinks = (
@@ -18,33 +19,39 @@ const Navbar = () => {
   const axiosSecure = useAxiosHook();
 
   const { handleSubmit, register } = useForm();
+  const { setSearchResult } = useAuth();
 
   const onSubmit = (data) => {
     const { search } = data;
 
     console.log(search);
 
-    try {
-      axiosSecure
-        .post(`/search?search=${search}`)
-        .then((res) => {
-          console.log(res?.data);
-        })
-        .catch((error) => {
-          console.log(error);
-          Swal.fire({
-            icon: "error",
-            title: error?.message,
-            showConfirmButton: true,
+    if (search) {
+      try {
+        axiosSecure
+          .get(`/search/?search=${search}`)
+          .then((res) => {
+            console.log(res?.data);
+            setSearchResult(res?.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: error?.message,
+              showConfirmButton: true,
+            });
           });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: error?.message,
+          showConfirmButton: true,
         });
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: error?.message,
-        showConfirmButton: true,
-      });
+      }
+    } else {
+      setSearchResult("");
     }
   };
 
@@ -77,7 +84,7 @@ const Navbar = () => {
         <a className="btn btn-ghost text-2xl font-serif">To-Do</a>
       </div>
       <div className="navbar-end">
-        <form className="flex relative " onSubmit={handleSubmit(onSubmit)}>
+        <form className="flex relative" onKeyUp={handleSubmit(onSubmit)}>
           <div className="form-control">
             <label className="label">
               <span className="label-text sr-only">Search by title</span>

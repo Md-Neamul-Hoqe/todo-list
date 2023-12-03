@@ -11,6 +11,7 @@ import useAuth from "../../Hooks/useAuth";
 import SelectStatus from "../../components/SelectStatus";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import SearchResult from "../../components/SearchResult";
 
 const Home = () => {
   const { handleDeleteTask, notification, headings } = useAuth();
@@ -28,7 +29,6 @@ const Home = () => {
     }
   }, [notification]);
 
-
   const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
 
   return (
@@ -39,6 +39,7 @@ const Home = () => {
         Conquer Your To-Do List
       </h2>
 
+      <section>{<SearchResult />}</section>
       <div>
         {!isPending && !isLoading ? (
           Array.isArray(todoList) ? (
