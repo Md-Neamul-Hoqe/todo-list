@@ -2,42 +2,72 @@ import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import useAxiosHook from "../Hooks/useAxiosHook";
 import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
 
-export const AuthContext = createContext(null);
+export const AuthContext = createContext({});
 const AuthProvider = ({ children }) => {
-  const [notification, setNotification] = useState("");
+  // const [notification, setNotification] = useState([]);
+  const [runningTask, setRunningTask] = useState("");
   const [searchResult, setSearchResult] = useState("");
   const axios = useAxiosHook();
+
+  /* Table header and footer's headings */
   const headings = (
     <tr>
       <th>#</th>
       <th>Title</th>
       <th>Description</th>
-      <th>Status</th>
       <th>Due Time</th>
+      <th>Status</th>
       <th>Actions</th>
     </tr>
   );
 
-  /* Get the titles of all task of which status is running */
+  /* Get the titles of all task of which status is running also get notifications */
+
+  const {
+    data: tasks,
+    isPending: isPendingTitles,
+    isLoading: isLoadingTitles,
+    refetch: refetchTitles,
+  } = useQuery({
+    // enabled:
+    queryKey: ["running-task-titles"],
+    queryFn: async () => {
+      const res = await axios.get("/running-tasks");
+
+      console.log(res?.data);
+
+      return res?.data;
+    },
+  });
+  // console.log(tasks);
+
   useEffect(() => {
-    axios.get("/running-tasks").then((res) => {
-      const titles = res?.data?.titles;
-      const Length = res?.data?.count;
+    if (tasks?.count) {
+      setRunningTask(
+        `The <b>'${tasks?.titles}'</b> ${
+          tasks?.count > 1 ? " are" : " is"
+        } deadline approached.`
+      );
+    } else {
+      setRunningTask("");
+    }
+  }, [tasks]);
 
-      console.log(titles);
-
-      if (Length) {
-        setNotification(
-          `The <b>'${titles}'</b> ${
-            Length > 1 ? " are" : " is"
-          } deadline approached.`
-        );
-      } else {
-        setNotification("");
-      }
-    });
-  }, [axios]);
+  const {
+    data: notification,
+    isPending: isPendingNotification,
+    isLoading: isLoadingNotification,
+    refetch: refetchNotification,
+  } = useQuery({
+    // enabled:
+    queryKey: ["running-task-titles"],
+    queryFn: async () => {
+      const res = await axios.get("/notifications");
+      return res?.data;
+    },
+  });
 
   const handleDeleteTask = (id, refetch) => {
     // console.log(id);
@@ -78,11 +108,38 @@ const AuthProvider = ({ children }) => {
     });
   };
 
+  /* Fist loading throw undefined */
+  if (!notification) refetchNotification();
+
+  if (!tasks) {
+    refetchTitles();
+  }
+  const handleNotification = (taskStatus) => {
+    console.log(taskStatus);
+    try {
+      axios
+        .post("/set-notifications", taskStatus)
+        .then((res) => console.log(res?.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const authInfo = {
+    headings,
+    runningTask,
+    setRunningTask,
     handleDeleteTask,
+    searchResult,
+    setSearchResult,
+    refetchTitles,
+    handleNotification,
     notification,
-    setNotification,
-    headings,searchResult, setSearchResult
+    refetchNotification,
+    isLoadingTitles,
+    isPendingTitles,
+    isPendingNotification,
+    isLoadingNotification,
   };
 
   return (

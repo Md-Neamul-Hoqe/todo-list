@@ -5,13 +5,10 @@ import "moment-timezone";
 import moment from "moment-timezone";
 import { Link } from "react-router-dom";
 import useGetTasks from "../../Hooks/useGetTasks";
-import useAxiosHook from "../../Hooks/useAxiosHook";
 import useAuth from "../../Hooks/useAuth";
 
 const History = () => {
   const { handleDeleteTask, headings } = useAuth();
-  const axios = useAxiosHook();
-
 
   const [todoList, isPending, isLoading, refetch] = useGetTasks("completed");
 
@@ -27,66 +24,48 @@ const History = () => {
         {!isPending && !isLoading ? (
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
-              <div className="overflow-x-auto md:mx-10">
+              <div className="overflow-x-auto md:m-10">
                 <table className="table table-zebra-zebra">
                   {/* head */}
-                  <thead>{headings}</thead>
+                  <thead className="bg-green-50">{headings}</thead>
                   <tbody>
-                    {todoList?.map((todo, index) => (
-                      <tr key={todo?._id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <div className="font-bold">{todo?.title}</div>
-                        </td>
-                        <td>{todo?.description}</td>
-                        <td>
-                          {moment(todo?.date).format(
-                            "dddd, MMMM D, YY, h:mm a"
-                          )}
-                        </td>
-                        <td>
-                          {todo?.status} <br />
-                          {moment(todo?.date).calendar(null, {
-                            sameDay: function (now) {
-                              if (this.isAfter(now)) {
-                                return "[Will Happen Today]";
-                              } else {
-                                axios
-                                  .patch(`/update-tasks/${todo?._id}`, {
-                                    status: "completed",
-                                  })
-                                  .then((res) => {
-                                    refetch();
-                                    console.log(res.data);
-
-                                    return "[Happened Today]";
-                                  });
-                              }
-                            },
-                            nextDay: "[Tomorrow]",
-                            nextWeek: "dddd",
-                            lastDay: "[Yesterday]",
-                            lastWeek: "[Last] dddd",
-                            sameElse: "DD/MM/YYYY",
-                          })}
-                          {/* {moment().to(todo?.date)} */}
-                        </td>
-                        <th>
-                          <button
-                            onClick={() => {
-                              return handleDeleteTask(todo?._id, refetch);
-                            }}
-                            className="btn btn-ghost btn-xs text-xl text-error">
-                            <FaTrashCan />
-                          </button>
-                          <Link
-                            to={`/manage-task/${todo?._id}`}
-                            className="btn btn-ghost btn-xs text-xl text-info">
-                            <FaEdit />
-                          </Link>
-                        </th>
-                      </tr>
-                    ))}
+                    {todoList?.map(
+                      ({ _id, title, description, status, date }, index) => (
+                        <tr key={_id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <div className="font-bold">{title}</div>
+                          </td>
+                          <td>{description}</td>
+                          <td>
+                            {moment(date).format("dddd, MMMM D, YY, h:mm a")}
+                          </td>
+                          <td>
+                            {status} <br />
+                            {moment(date).calendar(null, {
+                              sameDay: "[Happened Today]",
+                              lastDay: "[Yesterday]",
+                              lastWeek: "[Last] dddd",
+                              sameElse: "DD/MM/YYYY",
+                            })}
+                          </td>
+                          <th>
+                            <button
+                              onClick={() => {
+                                return handleDeleteTask(_id, refetch);
+                              }}
+                              className="btn btn-ghost btn-xs text-xl text-error">
+                              <FaTrashCan />
+                            </button>
+                            <Link
+                              to={`/manage-task/${_id}`}
+                              className="btn btn-ghost btn-xs text-xl text-info">
+                              <FaEdit />
+                            </Link>
+                          </th>
+                        </tr>
+                      )
+                    )}
                   </tbody>
                   {/* foot */}
                   <tfoot>{headings}</tfoot>

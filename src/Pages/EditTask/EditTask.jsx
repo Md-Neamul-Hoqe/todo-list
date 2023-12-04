@@ -9,9 +9,9 @@ import Swal from "sweetalert2";
 
 const EditTask = () => {
   const axiosSecure = useAxiosHook();
-  const { id } = useParams();
   const [, , , refetch] = useGetTasks();
   const task = useLoaderData();
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -30,9 +30,7 @@ const EditTask = () => {
 
     const updatedTodo = { title, description, date, status: "pending" };
 
-    console.log(updatedTodo);
-
-    // return <UpdateTask id={id} updatedTask={updatedTodo} />;
+    // console.log(updatedTodo);
 
     try {
       axiosSecure
@@ -40,8 +38,6 @@ const EditTask = () => {
         .then((res) => {
           if (res?.data?.modifiedCount) {
             refetch();
-
-            console.log(res?.data);
 
             Swal.fire({
               icon: "success",
@@ -74,6 +70,7 @@ const EditTask = () => {
                 defaultValue={task?.title}
                 {...register("title", {
                   maxLength: 100,
+                  required: true,
                 })}
                 type="text"
                 placeholder="Set a clear and understandable title."
@@ -102,6 +99,7 @@ const EditTask = () => {
                 className="input input-bordered"
                 {...register("date", {
                   min: moment.min(moment().startOf("second")),
+                  required: true,
                 })}
               />
             </div>

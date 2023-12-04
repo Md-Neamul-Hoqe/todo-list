@@ -3,8 +3,12 @@ import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosHook from "../Hooks/useAxiosHook";
 import useAuth from "../Hooks/useAuth";
+import Loader from "./Loader";
 
 const Navbar = () => {
+  const axiosSecure = useAxiosHook();
+  const { handleSubmit, register } = useForm();
+
   const NavLinks = (
     <>
       <li>
@@ -16,15 +20,64 @@ const Navbar = () => {
     </>
   );
 
-  const axiosSecure = useAxiosHook();
+  const {
+    setSearchResult,
+    notification,
+    isLoadingTitles,
+    isPendingTitles,
+    refetchTitles,
+    refetchNotification,
+    isPendingNotification,
+    isLoadingNotification,
+  } = useAuth();
 
-  const { handleSubmit, register } = useForm();
-  const { setSearchResult } = useAuth();
+  console.log(notification, isPendingTitles, isLoadingTitles);
+  if (
+    isLoadingTitles ||
+    isPendingTitles ||
+    isPendingNotification ||
+    isLoadingNotification
+  )
+    return refetchTitles() && refetchNotification() && <Loader />;
+
+  let showNotificationsContent = "";
+  const Length = notification?.length;
+  for (let index = 0; index < Length; index++) {
+    showNotificationsContent +=
+      "<li> <strong className='text-green-700 italic'>" +
+      notification[index]?.status.charAt(0).toUpperCase() +
+      notification[index]?.status.slice(1) +
+      "</strong>: " +
+      notification[index]?.title +
+      "</li>";
+  }
+  if (!Length) showNotificationsContent = "No notification found";
+
+  const ShowNotifications = () => {
+    Swal.fire({
+      title: Length ? "Notifications" : "Message Inbox Cleared",
+      icon: Length ? "info" : "success",
+      html: `<ul>${showNotificationsContent}</ul>`,
+      showCloseButton: true,
+      closeButtonHtml: `<span id="notificationShow">&times;</span>`,
+      showConfirmButton: true,
+    });
+
+    const notificationShow = document.getElementById("notificationShow");
+
+    notificationShow?.addEventListener("click", () => {
+      try {
+        axiosSecure.delete("/remove-notifications").then((res) => {
+          res?.data?.deletedCount && refetchNotification();
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
 
   const onSubmit = (data) => {
     const { search } = data;
-
-    console.log(search);
 
     if (search) {
       try {
@@ -85,19 +138,7 @@ const Navbar = () => {
       </div>
       <div className="navbar-end">
         <form className="flex relative" onKeyUp={handleSubmit(onSubmit)}>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text sr-only">Search by title</span>
-            </label>
-            <input
-              {...register("search")}
-              type="text"
-              placeholder="Search by title..."
-              className="input input-bordered"
-            />
-          </div>
-
-          <button className="btn btn-ghost btn-circle absolute right-0 top-4">
+          <span className="rounded-full absolute left-2 top-2.5">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-7 w-7"
@@ -111,14 +152,26 @@ const Navbar = () => {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-          </button>
+          </span>
+
+          <div className="form-control">
+            <input
+              {...register("search")}
+              type="text"
+              placeholder="Type to search..."
+              className="input input-bordered ps-10"
+            />
+          </div>
         </form>
 
-        <button className="btn btn-ghost btn-circle">
+        {/* Notification */}
+        <button
+          onClick={ShowNotifications}
+          className="btn btn-ghost btn-circle">
           <div className="indicator">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-7 w-7"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor">
@@ -129,7 +182,9 @@ const Navbar = () => {
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
               />
             </svg>
-            <span className="badge badge-xs badge-primary indicator-item"></span>
+            <span className="badge badge-xs badge-primary indicator-item">
+              {notification?.length}
+            </span>
           </div>
         </button>
       </div>

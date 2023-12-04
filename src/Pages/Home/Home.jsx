@@ -14,22 +14,34 @@ import Swal from "sweetalert2";
 import SearchResult from "../../components/SearchResult";
 
 const Home = () => {
-  const { handleDeleteTask, notification, headings } = useAuth();
+  const {
+    handleDeleteTask,
+    handleNotification,
+    runningTask,
+    refetchNotification,
+    refetchTitles,
+    headings,
+  } = useAuth();
 
   const axios = useAxiosHook();
 
+  // console.log(notification, runningTask);
+
   /* Notify someone about their tasks for today. */
   useEffect(() => {
-    if (notification) {
-      Swal.fire({
-        icon: "info",
-        html: notification,
-        showConfirmButton: true,
-      });
-    }
-  }, [notification]);
+    window.onload = function () {
+      runningTask &&
+        Swal.fire({
+          icon: "info",
+          html: runningTask,
+          showConfirmButton: true,
+        });
+    };
+  }, [runningTask]);
 
   const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
+
+  // Calculate the difference between now and the specific date
 
   return (
     <div>
@@ -39,12 +51,13 @@ const Home = () => {
         Conquer Your To-Do List
       </h2>
 
-      <section>{<SearchResult />}</section>
+      <SearchResult />
+
       <div>
         {!isPending && !isLoading ? (
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
-              <div className="overflow-x-auto md:mx-10 text-right">
+              <div className="overflow-x-auto md:m-10 text-right">
                 <Link
                   to="/add-new-task"
                   className="btn bg-green-700 text-white text-sm mb-2">
@@ -52,7 +65,7 @@ const Home = () => {
                 </Link>
                 <table className="table table-zebra-zebra">
                   {/* head */}
-                  <thead>{headings}</thead>
+                  <thead className="bg-green-50">{headings}</thead>
                   <tbody>
                     {todoList?.map(
                       ({ _id, title, description, status, date }, index) => (
@@ -72,60 +85,80 @@ const Home = () => {
                                 : ""
                             }>
                             <SelectStatus
+                              key={status}
                               id={_id}
-                              defaultValue={{
+                              task={{
                                 value: status,
                                 label:
                                   status.charAt(0).toUpperCase() +
                                   status.slice(1),
                               }}
-                            />{" "}
-                            <br />
+                            />
                             {moment(date).calendar(null, {
                               sameDay: function (now) {
+                                console.log("This :", this, "now: ", now);
                                 if (this.isAfter(now)) {
                                   /* change status from pending to running */
-                                  axios
-                                    .patch(`/update-tasks/${_id}`, {
-                                      status: "running",
-                                    })
-                                    .then((res) => {
-                                      refetch();
-                                      if (res?.data?.modifiedCount) {
-                                        const Toast = Swal.mixin({
-                                          toast: true,
-                                          position: "top-end",
-                                          showConfirmButton: false,
-                                          timer: 2000,
-                                          timerProgressBar: true,
-                                          didOpen: (toast) => {
-                                            toast.addEventListener(
-                                              "mouseenter",
-                                              Swal.stopTimer
-                                            );
-                                            toast.addEventListener(
-                                              "mouseleave",
-                                              Swal.resumeTimer
-                                            );
-                                          },
-                                        });
+                                  if (status !== "running") {
+                                    axios
+                                      .patch(`/update-tasks/${_id}`, {
+                                        status: "running",
+                                      })
+                                      .then((res) => {
+                                        if (res?.data?.modifiedCount) {
+                                          const Toast = Swal.mixin({
+                                            toast: true,
+                                            position: "top-end",
+                                            showConfirmButton: false,
+                                            timer: 2000,
+                                            timerProgressBar: true,
+                                            didOpen: (toast) => {
+                                              toast.addEventListener(
+                                                "mouseenter",
+                                                Swal.stopTimer
+                                              );
+                                              toast.addEventListener(
+                                                "mouseleave",
+                                                Swal.resumeTimer
+                                              );
+                                            },
+                                          });
 
-                                        Toast.fire({
-                                          icon: "info",
-                                          title: `'${title}' is now running task.`,
-                                        });
+                                          Toast.fire({
+                                            icon: "info",
+                                            title: `'${title}' is now running task.`,
+                                          });
 
-                                        return "[Will Happen Today]";
-                                      }
-                                    });
+                                          handleNotification({
+                                            title,
+                                            status: "running",
+                                          });
+
+                                          const difference = moment
+                                            .duration(moment(this).diff(now))
+                                            .asSeconds();
+
+                                          setTimeout(
+                                            refetchNotification,
+                                            difference > 0 ? difference : 0
+                                          );
+
+                                          refetch();
+                                          refetchNotification();
+                                          refetchTitles();
+                                        }
+                                      });
+                                  }
+                                  return "[Will Happen Today]";
                                 } else {
                                   /* change status running to completed */
                                   axios
                                     .patch(`/update-tasks/${_id}`, {
                                       status: "completed",
                                     })
-                                    .then((res) => {
+                                    .then(async (res) => {
                                       refetch();
+
                                       if (res?.data?.modifiedCount) {
                                         const Toast = Swal.mixin({
                                           toast: true,
@@ -145,12 +178,19 @@ const Home = () => {
                                           },
                                         });
 
-                                        Toast.fire({
+                                        ("[Will Happen Today]");
+
+                                        await Toast.fire({
                                           icon: "info",
                                           title: `'${title}' is completed.`,
                                         });
 
-                                        return "[Will Happen Today]";
+                                        handleNotification({
+                                          title,
+                                          status: "completed",
+                                        });
+
+                                        refetchNotification();
                                       }
                                     });
                                 }

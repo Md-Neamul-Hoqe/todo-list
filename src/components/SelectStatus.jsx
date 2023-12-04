@@ -9,10 +9,11 @@ const options = [
   { value: "running", label: "Running" },
   { value: "completed", label: "Completed" },
 ];
-const SelectStatus = ({ defaultValue, id }) => {
-  //   console.log(defaultValue);
+
+const SelectStatus = ({ task, id }) => {
+  // console.log({ task, id });
   const axiosSecure = useAxiosHook();
-  const [, , , refetch] = useGetTasks();
+  const [, , , refetch] = useGetTasks(0);
 
   const UpdateStatus = (status) => {
     // console.log(status);
@@ -22,9 +23,7 @@ const SelectStatus = ({ defaultValue, id }) => {
         .patch(`/update-tasks/${id}`, { status: status?.value })
         .then((res) => {
           if (res?.data?.modifiedCount) {
-            refetch();
-
-            // console.log(res?.data);
+            console.log("Changed by user: ", res?.data);
 
             Swal.fire({
               icon: "success",
@@ -32,6 +31,8 @@ const SelectStatus = ({ defaultValue, id }) => {
               showConfirmButton: false,
               timer: 1500,
             });
+
+            refetch();
           }
         })
         .catch((error) => console.log(error));
@@ -44,10 +45,9 @@ const SelectStatus = ({ defaultValue, id }) => {
     <div>
       <Select
         options={options}
-        // defaultInputValue={defaultValue?.value}
         defaultValue={{
-          value: defaultValue?.value,
-          label: defaultValue?.label,
+          value: task?.value,
+          label: task?.label,
         }}
         onChange={UpdateStatus}
       />
@@ -56,7 +56,7 @@ const SelectStatus = ({ defaultValue, id }) => {
 };
 
 SelectStatus.propTypes = {
-  defaultValue: PropTypes.object,
+  task: PropTypes.object,
   id: PropTypes.string,
 };
 

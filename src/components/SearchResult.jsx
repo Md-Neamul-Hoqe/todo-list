@@ -1,12 +1,17 @@
 import moment from "moment";
 import useAuth from "../Hooks/useAuth";
+import { FaTrashCan } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
 
 const SearchResult = () => {
-  const { searchResult, headings } = useAuth();
+  const { handleDeleteTask, searchResult, headings, refetch } = useAuth();
   return searchResult?.length > 0 ? (
-    <div
-      className={`min-h-[calc(100vh/2)] p-10 border border-green-700 rounded-xl m-10`}>
-      <div className="overflow-x-auto md:mx-10 text-right">
+    <section className={`min-h-[calc(100vh/2)] m-10`}>
+      <h2 className="text-xl text-center font-semibold capitalize italic">
+        From search result
+      </h2>
+      <div className="overflow-x-auto md:mx-10 text-right p-10 border border-green-700 rounded-xl">
         <table className="table table-zebra-zebra">
           {/* head */}
           <thead>{headings}</thead>
@@ -41,13 +46,28 @@ const SearchResult = () => {
                       sameElse: "DD/MM/YYYY",
                     })}
                   </td>
+                  <th>
+                    <button
+                      onClick={() => {
+                        console.log(title);
+                        return handleDeleteTask(_id, refetch);
+                      }}
+                      className="btn btn-ghost btn-xs text-xl text-error">
+                      <FaTrashCan />
+                    </button>
+                    <Link
+                      to={`/manage-task/${_id}`}
+                      className="btn btn-ghost btn-xs text-xl text-info">
+                      <FaEdit />
+                    </Link>
+                  </th>
                 </tr>
               )
             )}
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   ) : null;
 };
 
