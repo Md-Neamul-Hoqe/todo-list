@@ -4,6 +4,9 @@ import Home from "../Pages/Home/Home";
 import EditTask from "../Pages/EditTask/EditTask";
 import AddNewTask from "../Pages/AddNewTask/AddNewTask";
 import History from "../Pages/History/History";
+import Credentials from "../Pages/Credentials/Credentials";
+import Login from "../Pages/Credentials/Login";
+import Register from "../Pages/Credentials/Register";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +30,20 @@ export const router = createBrowserRouter([
       {
         path: "/history",
         element: <History />,
+      },
+    ],
+  },
+  {
+    path: "/credentials",
+    element: <Credentials />,
+    children: [
+      {
+        path: "sign-in",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
       },
     ],
   },

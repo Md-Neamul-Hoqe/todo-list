@@ -17,28 +17,26 @@ const Navbar = () => {
       <li>
         <NavLink to={"/history"}>History</NavLink>
       </li>
+      <li>
+        <NavLink to={"/credentials/sign-in"}>Sign In</NavLink>
+      </li>
+      <li>
+        <NavLink to={"/sign-out"}>Sign Out</NavLink>
+      </li>
     </>
   );
 
   const {
     setSearchResult,
     notification,
-    isLoadingTitles,
-    isPendingTitles,
-    refetchTitles,
     refetchNotification,
     isPendingNotification,
     isLoadingNotification,
   } = useAuth();
 
-  console.log(notification, isPendingTitles, isLoadingTitles);
-  if (
-    isLoadingTitles ||
-    isPendingTitles ||
-    isPendingNotification ||
-    isLoadingNotification
-  )
-    return refetchTitles() && refetchNotification() && <Loader />;
+  console.log(notification);
+  if (isPendingNotification || isLoadingNotification)
+    return refetchNotification() && <Loader />;
 
   let showNotificationsContent = "";
   const Length = notification?.length;

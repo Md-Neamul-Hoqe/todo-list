@@ -9,7 +9,6 @@ import useAxiosHook from "../../Hooks/useAxiosHook";
 import { MdAddCircleOutline } from "react-icons/md";
 import useAuth from "../../Hooks/useAuth";
 import SelectStatus from "../../components/SelectStatus";
-import { useEffect } from "react";
 import Swal from "sweetalert2";
 import SearchResult from "../../components/SearchResult";
 
@@ -17,31 +16,12 @@ const Home = () => {
   const {
     handleDeleteTask,
     handleNotification,
-    runningTask,
     refetchNotification,
-    refetchTitles,
     headings,
   } = useAuth();
 
   const axios = useAxiosHook();
-
-  // console.log(notification, runningTask);
-
-  /* Notify someone about their tasks for today. */
-  useEffect(() => {
-    window.onload = function () {
-      runningTask &&
-        Swal.fire({
-          icon: "info",
-          html: runningTask,
-          showConfirmButton: true,
-        });
-    };
-  }, [runningTask]);
-
   const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
-
-  // Calculate the difference between now and the specific date
 
   return (
     <div>
@@ -96,7 +76,6 @@ const Home = () => {
                             />
                             {moment(date).calendar(null, {
                               sameDay: function (now) {
-                                console.log("This :", this, "now: ", now);
                                 if (this.isAfter(now)) {
                                   /* change status from pending to running */
                                   if (status !== "running") {
@@ -104,7 +83,7 @@ const Home = () => {
                                       .patch(`/update-tasks/${_id}`, {
                                         status: "running",
                                       })
-                                      .then((res) => {
+                                      .then(async (res) => {
                                         if (res?.data?.modifiedCount) {
                                           const Toast = Swal.mixin({
                                             toast: true,
@@ -134,6 +113,12 @@ const Home = () => {
                                             status: "running",
                                           });
 
+                                          console.log(
+                                            "This :",
+                                            this,
+                                            "now: ",
+                                            now
+                                          );
                                           const difference = moment
                                             .duration(moment(this).diff(now))
                                             .asSeconds();
@@ -143,9 +128,8 @@ const Home = () => {
                                             difference > 0 ? difference : 0
                                           );
 
-                                          refetch();
-                                          refetchNotification();
-                                          refetchTitles();
+                                          await refetch();
+                                          await refetchNotification();
                                         }
                                       });
                                   }
@@ -197,9 +181,46 @@ const Home = () => {
                               },
                               nextDay: "[Tomorrow]",
                               nextWeek: "dddd",
-                              lastDay: "[Yesterday]",
-                              lastWeek: "[Last] dddd",
-                              sameElse: "DD/MM/YYYY",
+                              sameElse: function (now) {
+                                if (
+                                  this.isBefore(now) &&
+                                  status !== "completed"
+                                ) {
+                                  axios
+                                    .patch(`/update-tasks/${_id}`, {
+                                      status: "completed",
+                                    })
+                                    .then(async (res) => {
+                                      if (res?.data?.modifiedCount) {
+                                        const Toast = Swal.mixin({
+                                          toast: true,
+                                          position: "top-end",
+                                          showConfirmButton: false,
+                                          timer: 2000,
+                                          timerProgressBar: true,
+                                          didOpen: (toast) => {
+                                            toast.addEventListener(
+                                              "mouseenter",
+                                              Swal.stopTimer
+                                            );
+                                            toast.addEventListener(
+                                              "mouseleave",
+                                              Swal.resumeTimer
+                                            );
+                                          },
+                                        });
+
+                                        Toast.fire({
+                                          icon: "info",
+                                          title: `'${title}' is times up.`,
+                                        });
+
+                                        await refetch();
+                                      }
+                                    });
+                                }
+                                return "DD/MM/YYYY";
+                              },
                             })}
                             {/* {moment().to(date)} */}
                           </td>

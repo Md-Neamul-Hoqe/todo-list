@@ -3,11 +3,25 @@ import PropTypes from "prop-types";
 import useAxiosHook from "../Hooks/useAxiosHook";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
+import auth from "../config/firebase.config";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 
 export const AuthContext = createContext({});
+const googleProvider = new GoogleAuthProvider();
+
 const AuthProvider = ({ children }) => {
-  // const [notification, setNotification] = useState([]);
-  const [runningTask, setRunningTask] = useState("");
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [searchResult, setSearchResult] = useState("");
   const axios = useAxiosHook();
 
@@ -23,38 +37,72 @@ const AuthProvider = ({ children }) => {
     </tr>
   );
 
-  /* Get the titles of all task of which status is running also get notifications */
+  /**
+   * ====================
+   * Credentials Functions
+   * ====================
+   */
 
-  const {
-    data: tasks,
-    isPending: isPendingTitles,
-    isLoading: isLoadingTitles,
-    refetch: refetchTitles,
-  } = useQuery({
-    // enabled:
-    refetchOnWindowFocus: false,
-    queryKey: ["running-task-titles"],
-    queryFn: async () => {
-      const res = await axios.get("/running-tasks");
+  /* Credentials */
+  const createUser = (email, password) => {
+    setLoading(true);
 
-      console.log(res?.data);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-      return res?.data;
-    },
-  });
-  // console.log(tasks);
+  const userSingIn = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
+  const userSignOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
+
+  const googleSignInUser = () => {
+    return signInWithPopup(auth, googleProvider);
+  };
+
+  /* Auth state change */
   useEffect(() => {
-    if (tasks?.count) {
-      setRunningTask(
-        `The <b>'${tasks?.titles}'</b> ${
-          tasks?.count > 1 ? " are" : " is"
-        } deadline approached.`
-      );
-    } else {
-      setRunningTask("");
-    }
-  }, [tasks]);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        // add token
+        const userInfo = { email: currentUser?.email };
+        try {
+          axios
+            .post("/auth/jwt", userInfo, { withCredentials: true })
+            .then(() => {
+              setLoading(false);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        // remove token
+        axios.post("/user/logout", currentUser).then(() => {
+          //console.log("is Log Out ? ", res?.data?.success);
+          setLoading(false);
+        });
+      }
+
+      // console.log("Current User", currentUser);
+    });
+
+    return () => {
+      return unsubscribe();
+    };
+  }, [axios]);
+
+  const updateUserProfileImage = (name, photoUrl) => {
+    setLoading(true);
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photoUrl,
+    });
+  };
 
   const {
     data: notification,
@@ -62,7 +110,6 @@ const AuthProvider = ({ children }) => {
     isLoading: isLoadingNotification,
     refetch: refetchNotification,
   } = useQuery({
-    // enabled:
     refetchOnWindowFocus: false,
     queryKey: ["running-task-titles"],
     queryFn: async () => {
@@ -72,8 +119,6 @@ const AuthProvider = ({ children }) => {
   });
 
   const handleDeleteTask = (id, refetch) => {
-    // console.log(id);
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -110,14 +155,12 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  /* Fist loading throw undefined */
-  if (!notification) refetchNotification();
-
-  if (!tasks) {
-    refetchTitles();
+  /* To solve Fist loading throw undefined */
+  if (!notification) {
+    refetchNotification();
   }
+
   const handleNotification = (taskStatus) => {
-    console.log(taskStatus);
     try {
       axios
         .post("/set-notifications", taskStatus)
@@ -129,19 +172,26 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     headings,
-    runningTask,
-    setRunningTask,
     handleDeleteTask,
     searchResult,
     setSearchResult,
-    refetchTitles,
     handleNotification,
     notification,
     refetchNotification,
-    isLoadingTitles,
-    isPendingTitles,
     isPendingNotification,
     isLoadingNotification,
+
+    user,
+    setUser,
+    loading,
+    setLoading,
+    createUser,
+    userSingIn,
+    updateUserProfileImage,
+    userSignOut,
+    googleSignInUser,
+    error,
+    setError,
   };
 
   return (
