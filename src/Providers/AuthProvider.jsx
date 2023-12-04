@@ -32,6 +32,7 @@ const AuthProvider = ({ children }) => {
     refetch: refetchTitles,
   } = useQuery({
     // enabled:
+    refetchOnWindowFocus: false,
     queryKey: ["running-task-titles"],
     queryFn: async () => {
       const res = await axios.get("/running-tasks");
@@ -62,6 +63,7 @@ const AuthProvider = ({ children }) => {
     refetch: refetchNotification,
   } = useQuery({
     // enabled:
+    refetchOnWindowFocus: false,
     queryKey: ["running-task-titles"],
     queryFn: async () => {
       const res = await axios.get("/notifications");
