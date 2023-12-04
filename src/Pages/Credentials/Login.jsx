@@ -22,26 +22,23 @@ const Login = () => {
     const password = form.get("password");
 
     try {
-      userSingIn(email, password)
-        .then(() => {
-          // const { user } = res;
+      userSingIn(email, password).then(() => {
 
-          Swal.fire({
-            icon: "success",
-            title: "Signed in successfully",
-            showConfirmButton: false,
-            timer: 1000,
-          });
-
-          // console.log(user, from);
-
-          return navigate(from, { replace: true });
-        })
-        .catch((error) => {
-          console.log(error.message);
+        Swal.fire({
+          icon: "success",
+          title: "Signed in successfully",
+          showConfirmButton: false,
+          timer: 1000,
         });
+
+        return navigate(from, { replace: true });
+      });
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
     }
 
     console.log(email, password);
@@ -74,11 +71,11 @@ const Login = () => {
             className="input input-bordered"
             required
           />
-          <label className="label">
+          {/* <label className="label">
             <a href="#" className="label-text-alt link link-hover">
               Forgot password?
             </a>
-          </label>
+          </label> */}
         </div>
         <div className="form-control mt-6">
           <button type="submit" className="btn bg-green-700 text-white">
@@ -87,14 +84,13 @@ const Login = () => {
         </div>
       </form>
       <div className="flex flex-col items-center gap-5">
-        <div className="text-yellow-600">
-          {" "}
+        <div className="text-green-700">
           New here? <Link to="/credentials/register">Create a New Account</Link>
         </div>
         <SocialLogin />
       </div>
       <Helmet>
-        <title>Bistro Boss Restaurant | Sign In</title>
+        <title>To-Do List | Sign In</title>
       </Helmet>
     </aside>
   );

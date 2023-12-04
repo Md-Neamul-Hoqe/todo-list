@@ -70,7 +70,7 @@ const SocialLogin = () => {
         </Link>
       </div>
       <div className="divider "></div>
-      <Link to="/" className="btn btn-sm bg-orange-600 text-white">
+      <Link to="/" className="btn btn-sm bg-green-700 text-white">
         Go Home
       </Link>
     </>

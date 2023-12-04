@@ -6,6 +6,7 @@ import useAuth from "../Hooks/useAuth";
 import Loader from "./Loader";
 
 const Navbar = () => {
+  const { user, userSignOut } = useAuth();
   const axiosSecure = useAxiosHook();
   const { handleSubmit, register } = useForm();
 
@@ -17,12 +18,17 @@ const Navbar = () => {
       <li>
         <NavLink to={"/history"}>History</NavLink>
       </li>
-      <li>
-        <NavLink to={"/credentials/sign-in"}>Sign In</NavLink>
-      </li>
-      <li>
-        <NavLink to={"/sign-out"}>Sign Out</NavLink>
-      </li>
+      {user?.email ? (
+        <li>
+          <button onClick={userSignOut} className="btn btn-outline">
+            Sign Out
+          </button>
+        </li>
+      ) : (
+        <li>
+          <NavLink to={"/credentials/sign-in"}>Sign In</NavLink>
+        </li>
+      )}
     </>
   );
 
@@ -34,7 +40,7 @@ const Navbar = () => {
     isLoadingNotification,
   } = useAuth();
 
-  console.log(notification);
+  console.log("user Notification: ", notification);
   if (isPendingNotification || isLoadingNotification)
     return refetchNotification() && <Loader />;
 

@@ -1,16 +1,17 @@
 import Loader from "../../components/Loader";
-import { FaTrashCan } from "react-icons/fa6";
-import { FaEdit } from "react-icons/fa";
-import "moment-timezone";
 import moment from "moment-timezone";
-import { Link } from "react-router-dom";
 import useGetTasks from "../../Hooks/useGetTasks";
 import useAxiosHook from "../../Hooks/useAxiosHook";
-import { MdAddCircleOutline } from "react-icons/md";
 import useAuth from "../../Hooks/useAuth";
 import SelectStatus from "../../components/SelectStatus";
 import Swal from "sweetalert2";
 import SearchResult from "../../components/SearchResult";
+import { FaTrashCan } from "react-icons/fa6";
+import { FaEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { MdAddCircleOutline } from "react-icons/md";
+import { Helmet } from "react-helmet-async";
+import "moment-timezone";
 
 const Home = () => {
   const {
@@ -262,6 +263,9 @@ const Home = () => {
           <Loader ratio={2} />
         )}
       </div>
+      <Helmet>
+        <title>To-Do List | Home</title>
+      </Helmet>
     </div>
   );
 };

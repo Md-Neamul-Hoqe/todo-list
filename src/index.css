@@ -8,25 +8,9 @@
 }
 
 a.active {
-  @apply bg-black text-[#EEFF25] !important;
+  @apply bg-green-700 text-white font-serif !important;
 }
 
-.react-tabs {
-  @apply text-center !important;
-}
-
-.react-tabs__tab-list {
-  @apply text-2xl font-medium border-0 mb-10 !important;
-}
-
-.react-tabs__tab {
-  @apply border-0 !important;
-}
-
-.react-tabs__tab--selected {
-  @apply text-yellow-600 font-bold underline underline-offset-8 !important;
-}
-
-.contentCenter{
+.contentCenter {
   @apply flex justify-center items-center;
 }

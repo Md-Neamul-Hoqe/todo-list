@@ -43,7 +43,6 @@ const AuthProvider = ({ children }) => {
    * ====================
    */
 
-  /* Credentials */
   const createUser = (email, password) => {
     setLoading(true);
 
@@ -72,11 +71,9 @@ const AuthProvider = ({ children }) => {
         // add token
         const userInfo = { email: currentUser?.email };
         try {
-          axios
-            .post("/auth/jwt", userInfo, { withCredentials: true })
-            .then(() => {
-              setLoading(false);
-            });
+          axios.post("/auth/jwt", userInfo).then(() => {
+            setLoading(false);
+          });
         } catch (error) {
           console.log(error);
         }
@@ -104,14 +101,21 @@ const AuthProvider = ({ children }) => {
     });
   };
 
+  /**
+   * ========================
+   * To-Do Functionality
+   * ========================
+   */
+  console.log(user);
   const {
     data: notification,
     isPending: isPendingNotification,
     isLoading: isLoadingNotification,
     refetch: refetchNotification,
   } = useQuery({
+    enabled: !!user?.email,
     refetchOnWindowFocus: false,
-    queryKey: ["running-task-titles"],
+    queryKey: ["notifications", user?.email],
     queryFn: async () => {
       const res = await axios.get("/notifications");
       return res?.data;

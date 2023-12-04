@@ -1,16 +1,14 @@
-import { AuthContext } from "../../Providers/AuthProvider";
-import { useContext } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
 import SocialLogin from "../../components/SocialLogin";
 import useAxiosHook from "../../Hooks/useAxiosHook";
+import useAuth from "../../Hooks/useAuth";
 
 const Register = () => {
   const axiosPublic = useAxiosHook();
-  const { createUser, updateUserProfileImage } = useContext(AuthContext);
+  const { setError, createUser, updateUserProfileImage } = useAuth();
   const {
     register,
     handleSubmit,
@@ -20,31 +18,31 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmitForm = (data) => {
-    console.log(data);
+    // console.log(data);
     const { email, password, name, photoURL } = data;
 
     console.log({ email, password, name, photoURL });
 
-    createUser(email, password).then((res) => {
-      const loggedUser = res?.user;
+    createUser(email, password)
+      .then((res) => {
+        // const loggedUser = res?.user;
 
-      console.log(loggedUser);
-      updateUserProfileImage(email, photoURL)
-        .then((res) => {
-          console.log(res);
+        console.log(res);
+        updateUserProfileImage(email, photoURL).then(() => {
+          // console.log(res);
 
           const userInfo = {
             name: name,
             email: email,
           };
 
-          axiosPublic.post("/users", userInfo).then((res) => {
+          axiosPublic.post("/create-user", userInfo).then((res) => {
             if (res?.data?.insertedId) {
               // console.log("User photo updated.");
 
               Swal.fire({
                 icon: "success",
-                title: "User profile updated successfully.",
+                title: "User profile created successfully.",
                 showConfirmButton: false,
                 timer: 1500,
               });
@@ -56,15 +54,23 @@ const Register = () => {
               Swal.fire({
                 icon: "error",
                 title: `Database error: ${res?.data}.`,
-                showConfirmButton: false,
-                timer: 1500,
+                showConfirmButton: true,
               });
             }
           });
-        })
-        .catch((error) => console.log(error));
-      // console.log(res, loggedUser);
-    });
+        });
+
+        // console.log(res, loggedUser);
+      })
+      .catch((error) => {
+        setError(error?.message);
+
+        Swal.fire({
+          icon: "error",
+          title: error?.message,
+          showConfirmButton: true,
+        });
+      });
   };
 
   return (
@@ -135,13 +141,13 @@ const Register = () => {
           />
         </div>
         <div className="form-control mt-6">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn bg-green-700 text-white">
             Sign Up
           </button>
         </div>
       </form>
       <div className="flex flex-col items-center gap-5">
-        <div className="text-yellow-600">
+        <div className="text-green-700">
           Already registered?
           <Link to="/credentials/sign-in"> Go to log in</Link>
         </div>
@@ -149,7 +155,7 @@ const Register = () => {
       </div>
 
       <Helmet>
-        <title>Bistro Boss Restaurant | Sign Up</title>
+        <title>To-Do List | Sign Up</title>
       </Helmet>
     </aside>
   );
