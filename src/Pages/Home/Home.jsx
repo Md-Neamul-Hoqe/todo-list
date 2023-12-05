@@ -22,7 +22,46 @@ const Home = () => {
   } = useAuth();
 
   const axios = useAxiosHook();
-  const [todoList, isPending, isLoading, refetch] = useGetTasks(0);
+  const [todoList, isPendingToDoList, isLoadingToDoList, refetch] =
+    useGetTasks(0);
+
+  const handleCompletedTask = (_id, title, status, email) => {
+    if (status !== "completed") {
+      axios
+        .patch(`/update-tasks/${_id}`, {
+          status: "completed",
+        })
+        .then(async (res) => {
+          if (res?.data?.modifiedCount) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+
+            Toast.fire({
+              icon: "info",
+              title: `'${title}' is times up.`,
+            });
+
+            handleNotification({
+              title,
+              status: "completed",
+              email,
+            });
+
+            refetchNotification();
+            await refetch();
+          }
+        });
+    }
+  };
 
   return (
     <div>
@@ -35,7 +74,7 @@ const Home = () => {
       <SearchResult />
 
       <div>
-        {!isPending && !isLoading ? (
+        {!isPendingToDoList && !isLoadingToDoList ? (
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
               <div className="overflow-x-auto md:m-10 text-right">
@@ -49,7 +88,10 @@ const Home = () => {
                   <thead className="bg-green-50">{headings}</thead>
                   <tbody>
                     {todoList?.map(
-                      ({ _id, title, description, status, date }, index) => (
+                      (
+                        { _id, title, description, status, date, email },
+                        index
+                      ) => (
                         <tr key={_id}>
                           <td>{index + 1}</td>
                           <td>
@@ -112,14 +154,9 @@ const Home = () => {
                                           handleNotification({
                                             title,
                                             status: "running",
+                                            email,
                                           });
 
-                                          console.log(
-                                            "This :",
-                                            this,
-                                            "now: ",
-                                            now
-                                          );
                                           const difference = moment
                                             .duration(moment(this).diff(now))
                                             .asSeconds();
@@ -137,89 +174,27 @@ const Home = () => {
                                   return "[Will Happen Today]";
                                 } else {
                                   /* change status running to completed */
-                                  axios
-                                    .patch(`/update-tasks/${_id}`, {
-                                      status: "completed",
-                                    })
-                                    .then(async (res) => {
-                                      refetch();
+                                  handleCompletedTask(
+                                    _id,
+                                    title,
+                                    status,
+                                    email
+                                  );
 
-                                      if (res?.data?.modifiedCount) {
-                                        const Toast = Swal.mixin({
-                                          toast: true,
-                                          position: "top-end",
-                                          showConfirmButton: false,
-                                          timer: 2000,
-                                          timerProgressBar: true,
-                                          didOpen: (toast) => {
-                                            toast.addEventListener(
-                                              "mouseenter",
-                                              Swal.stopTimer
-                                            );
-                                            toast.addEventListener(
-                                              "mouseleave",
-                                              Swal.resumeTimer
-                                            );
-                                          },
-                                        });
-
-                                        ("[Will Happen Today]");
-
-                                        await Toast.fire({
-                                          icon: "info",
-                                          title: `'${title}' is completed.`,
-                                        });
-
-                                        handleNotification({
-                                          title,
-                                          status: "completed",
-                                        });
-
-                                        refetchNotification();
-                                      }
-                                    });
+                                  return "[Happened Today]";
                                 }
                               },
                               nextDay: "[Tomorrow]",
-                              nextWeek: "dddd",
-                              sameElse: function (now) {
-                                if (
-                                  this.isBefore(now) &&
-                                  status !== "completed"
-                                ) {
-                                  axios
-                                    .patch(`/update-tasks/${_id}`, {
-                                      status: "completed",
-                                    })
-                                    .then(async (res) => {
-                                      if (res?.data?.modifiedCount) {
-                                        const Toast = Swal.mixin({
-                                          toast: true,
-                                          position: "top-end",
-                                          showConfirmButton: false,
-                                          timer: 2000,
-                                          timerProgressBar: true,
-                                          didOpen: (toast) => {
-                                            toast.addEventListener(
-                                              "mouseenter",
-                                              Swal.stopTimer
-                                            );
-                                            toast.addEventListener(
-                                              "mouseleave",
-                                              Swal.resumeTimer
-                                            );
-                                          },
-                                        });
-
-                                        Toast.fire({
-                                          icon: "info",
-                                          title: `'${title}' is times up.`,
-                                        });
-
-                                        await refetch();
-                                      }
-                                    });
-                                }
+                              nextWeek: "[Next] dddd",
+                              lastDay: function () {
+                                handleCompletedTask(_id, title, status, email);
+                                return "[Yesterday]";
+                              },
+                              lastWeek: function () {
+                                handleCompletedTask(_id, title, status, email);
+                                return "[Last] dddd";
+                              },
+                              sameElse: function () {
                                 return "DD/MM/YYYY";
                               },
                             })}
@@ -228,7 +203,7 @@ const Home = () => {
                           <th>
                             <button
                               onClick={() => {
-                                console.log(title);
+                                // console.log(title);
                                 return handleDeleteTask(_id, refetch);
                               }}
                               className="btn btn-ghost btn-xs text-xl text-error">

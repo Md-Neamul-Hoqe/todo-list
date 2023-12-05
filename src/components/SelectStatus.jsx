@@ -23,7 +23,7 @@ const SelectStatus = ({ task, id }) => {
         .patch(`/update-tasks/${id}`, { status: status?.value })
         .then((res) => {
           if (res?.data?.modifiedCount) {
-            console.log("Changed by user: ", res?.data);
+            // console.log("Changed by user: ", res?.data);
 
             Swal.fire({
               icon: "success",
@@ -34,10 +34,14 @@ const SelectStatus = ({ task, id }) => {
 
             refetch();
           }
-        })
-        .catch((error) => console.log(error));
+        });
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
     }
   };
 

@@ -1,27 +1,45 @@
 "use client";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 import useGetTasks from "../../Hooks/useGetTasks";
 import Swal from "sweetalert2";
+import useAuth from "../../Hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../components/Loader";
 
 const EditTask = () => {
+  const { user, loading } = useAuth();
+  const { id } = useParams();
   const axiosSecure = useAxiosHook();
   const [, , , refetch] = useGetTasks();
-  const task = useLoaderData();
-  const { id } = useParams();
 
+  const { handleSubmit, register } = useForm();
   const navigate = useNavigate();
 
-  const { handleSubmit, register } = useForm({
-    defaultValues: {
-      title: task?.title,
-      description: task?.description,
-      date: task?.date,
+  const {
+    data: task = {},
+    isPending,
+    isLoading,
+    refetch: refetchTask,
+  } = useQuery({
+    enabled: !loading && !!user?.email,
+    queryKey: ["single-task", user?.email],
+    queryFn: async () => {
+      if (user?.email) {
+        const res = await axiosSecure.get(
+          `/single-task/${id}?email=${user?.email}`
+        );
+
+        return res?.data;
+      }
     },
   });
+
+  if ((!isPending && !task?.title) || !task?.description || !task?.date)
+    refetchTask();
 
   const onSubmit = (data) => {
     // console.log(data);
@@ -33,24 +51,26 @@ const EditTask = () => {
     // console.log(updatedTodo);
 
     try {
-      axiosSecure
-        .patch(`/update-tasks/${id}`, updatedTodo)
-        .then((res) => {
-          if (res?.data?.modifiedCount) {
-            refetch();
+      axiosSecure.patch(`/update-tasks/${id}`, updatedTodo).then((res) => {
+        if (res?.data?.modifiedCount) {
+          refetch();
 
-            Swal.fire({
-              icon: "success",
-              title: "Schedule Updated.",
-              showConfirmButton: true,
-            });
+          Swal.fire({
+            icon: "success",
+            title: "Schedule Updated.",
+            showConfirmButton: true,
+          });
 
-            return navigate("/");
-          }
-        })
-        .catch((error) => console.log(error));
+          return navigate("/");
+        }
+      });
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
     }
   };
 
@@ -59,7 +79,11 @@ const EditTask = () => {
       <h1 className="text-5xl font-mono font-semibold text-center my-10">
         Edit The Task
       </h1>
-      {Object?.keys(task) ? (
+      {isPending || isLoading ? (
+        <div className="contentCenter min-h-[calc(100vh/3)]">
+          <Loader />
+        </div>
+      ) : Object?.keys(task) ? (
         Object?.keys(task)?.length > 0 ? (
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-control">
@@ -85,6 +109,7 @@ const EditTask = () => {
                 type="text"
                 placeholder="Set description."
                 className="textarea textarea-bordered"
+                defaultValue={task?.description}
                 {...register("description")}
                 rows={10}
               />
@@ -97,6 +122,7 @@ const EditTask = () => {
                 type="datetime-local"
                 placeholder="Set time"
                 className="input input-bordered"
+                defaultValue={task?.date}
                 {...register("date", {
                   min: moment.min(moment().startOf("second")),
                   required: true,

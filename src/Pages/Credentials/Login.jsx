@@ -15,7 +15,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(e.target);
+    // console.log(e.target);
 
     const form = new FormData(e.target);
     const email = form.get("email");
@@ -41,7 +41,7 @@ const Login = () => {
       });
     }
 
-    console.log(email, password);
+    // console.log(email, password);
   };
 
   return (

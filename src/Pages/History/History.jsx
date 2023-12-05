@@ -10,7 +10,8 @@ import useAuth from "../../Hooks/useAuth";
 const History = () => {
   const { handleDeleteTask, headings } = useAuth();
 
-  const [todoList, isPending, isLoading, refetch] = useGetTasks("completed");
+  const [todoList, isPendingToDoList, isLoadingToDoList, refetch] =
+    useGetTasks("completed");
 
   return (
     <div>
@@ -21,7 +22,7 @@ const History = () => {
       </h2>
 
       <div>
-        {!isPending && !isLoading ? (
+        {!isPendingToDoList && !isLoadingToDoList ? (
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
               <div className="overflow-x-auto md:m-10">

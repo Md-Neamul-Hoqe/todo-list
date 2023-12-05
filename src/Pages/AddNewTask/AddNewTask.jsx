@@ -6,10 +6,12 @@ import useAxiosHook from "../../Hooks/useAxiosHook";
 import useGetTasks from "../../Hooks/useGetTasks";
 import Swal from "sweetalert2";
 import moment from "moment";
+import useAuth from "../../Hooks/useAuth";
 
 const AddNewTask = () => {
   const axiosSecure = useAxiosHook();
   const [, , , refetch] = useGetTasks();
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -24,36 +26,32 @@ const AddNewTask = () => {
 
     const { title, description, date } = data;
 
-    const newTask = { title, description, date, status: "pending" };
+    const newTask = {
+      title,
+      description,
+      date,
+      status: "pending",
+      email: user?.email,
+    };
 
-    console.log(newTask);
+    // console.log(newTask);
 
     try {
-      axiosSecure
-        .post(`/create-task`, newTask)
-        .then((res) => {
-          if (res?.data?.insertedId) {
-            refetch();
+      axiosSecure.post(`/create-task`, newTask).then((res) => {
+        if (res?.data?.insertedId) {
+          refetch();
 
-            console.log(res?.data);
+          // console.log(res?.data);
 
-            Swal.fire({
-              icon: "success",
-              title: "Schedule Added.",
-              showConfirmButton: true,
-            });
-
-            return navigate("/");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
           Swal.fire({
-            icon: "error",
-            title: error?.message,
+            icon: "success",
+            title: "Schedule Added.",
             showConfirmButton: true,
           });
-        });
+
+          return navigate("/");
+        }
+      });
     } catch (error) {
       console.log(error);
       Swal.fire({

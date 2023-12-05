@@ -1,28 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosHook from "./useAxiosHook";
+import useAuth from "./useAuth";
 
 const useGetTasks = (status = "all") => {
-  const axiosSecure = useAxiosHook();
-  const api = status === "completed" ? "/completed-tasks" : "/tasks";
+  const { user } = useAuth();
 
-  // console.log(!status, api);
+  const axiosSecure = useAxiosHook();
+
+  const api =
+    status === "completed" && !!user?.email
+      ? `/completed-tasks?email=${user?.email}`
+      : `/tasks?email=${user?.email}`;
 
   const {
     data: todoList = [],
-    isPending,
-    isLoading,
+    isPending: isPendingToDoList,
+    isLoading: isLoadingToDoList,
     refetch,
   } = useQuery({
-    queryKey: [`${status === "completed" ? status : "todoList"}`],
+    enabled: !!user?.email,
+    queryKey: [`${status === "completed" ? status : "todoList"}`, user?.email],
     queryFn: async () => {
-      const result = await axiosSecure.get(api);
+      if (user?.email) {
+        const result = await axiosSecure.get(api);
 
-      // console.log(result?.data);
-      return result?.data;
+        // console.log(result?.data);
+        return result?.data;
+      }
     },
   });
 
-  return [todoList, isPending, isLoading, refetch];
+  return [todoList, isPendingToDoList, isLoadingToDoList, refetch];
 };
 
 export default useGetTasks;

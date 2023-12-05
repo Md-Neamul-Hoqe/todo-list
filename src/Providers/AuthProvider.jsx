@@ -68,7 +68,6 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // add token
         const userInfo = { email: currentUser?.email };
         try {
           axios.post("/auth/jwt", userInfo).then(() => {
@@ -76,11 +75,15 @@ const AuthProvider = ({ children }) => {
           });
         } catch (error) {
           console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: error?.message,
+            showConfirmButton: true,
+          });
         }
       } else {
         // remove token
         axios.post("/user/logout", currentUser).then(() => {
-          //console.log("is Log Out ? ", res?.data?.success);
           setLoading(false);
         });
       }
@@ -89,7 +92,7 @@ const AuthProvider = ({ children }) => {
     });
 
     return () => {
-      return unsubscribe();
+      return () => unsubscribe();
     };
   }, [axios]);
 
@@ -106,22 +109,6 @@ const AuthProvider = ({ children }) => {
    * To-Do Functionality
    * ========================
    */
-  console.log(user);
-  const {
-    data: notification,
-    isPending: isPendingNotification,
-    isLoading: isLoadingNotification,
-    refetch: refetchNotification,
-  } = useQuery({
-    enabled: !!user?.email,
-    refetchOnWindowFocus: false,
-    queryKey: ["notifications", user?.email],
-    queryFn: async () => {
-      const res = await axios.get("/notifications");
-      return res?.data;
-    },
-  });
-
   const handleDeleteTask = (id, refetch) => {
     Swal.fire({
       title: "Are you sure?",
@@ -159,21 +146,43 @@ const AuthProvider = ({ children }) => {
     });
   };
 
-  /* To solve Fist loading throw undefined */
-  if (!notification) {
-    refetchNotification();
-  }
-
   const handleNotification = (taskStatus) => {
     try {
-      axios
-        .post("/set-notifications", taskStatus)
-        .then((res) => console.log(res?.data));
+      user?.email &&
+        axios.post(`/set-notifications?email=${user?.email}`, taskStatus);
     } catch (error) {
       console.log(error);
+
+      Swal.fire({
+        icon: "error",
+        title: error?.message,
+        showConfirmButton: true,
+      });
     }
   };
-
+Credential
+  const {
+    data: notification = [],
+    isPending: isPendingNotification,
+    isLoading: isLoadingNotification,
+    refetch: refetchNotification,
+  } = useQuery({
+    enabled: !!user,
+    refetchOnWindowFocus: false,
+    queryKey: ["notifications", user?.email],
+    queryFn: async () => {
+      if (user?.email) {
+        const res = await axios.get(`/notifications?email=${user?.email}`);
+        return res?.data;
+      }
+    },
+  });
+  // May the truthful succeed.
+  /**
+   * =========================
+   *  Context Variables
+   * =========================
+   * */
   const authInfo = {
     headings,
     handleDeleteTask,

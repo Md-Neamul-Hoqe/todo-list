@@ -1,14 +1,24 @@
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosHook from "../Hooks/useAxiosHook";
 import useAuth from "../Hooks/useAuth";
 import Loader from "./Loader";
+import { useEffect } from "react";
 
 const Navbar = () => {
-  const { user, userSignOut } = useAuth();
+  const {
+    user,
+    loading,
+    userSignOut,
+    setSearchResult,
+    notification,
+    refetchNotification,
+  } = useAuth();
+
   const axiosSecure = useAxiosHook();
   const { handleSubmit, register } = useForm();
+  const navigate = useNavigate();
 
   const NavLinks = (
     <>
@@ -20,7 +30,7 @@ const Navbar = () => {
       </li>
       {user?.email ? (
         <li>
-          <button onClick={userSignOut} className="btn btn-outline">
+          <button onClick={userSignOut} className="outline-white">
             Sign Out
           </button>
         </li>
@@ -32,17 +42,10 @@ const Navbar = () => {
     </>
   );
 
-  const {
-    setSearchResult,
-    notification,
-    refetchNotification,
-    isPendingNotification,
-    isLoadingNotification,
-  } = useAuth();
-
-  console.log("user Notification: ", notification);
-  if (isPendingNotification || isLoadingNotification)
-    return refetchNotification() && <Loader />;
+  useEffect(() => {
+    if (loading) <Loader />;
+    else if (!user?.email) navigate("/credentials/sign-in");
+  }, [loading, navigate, user?.email]);
 
   let showNotificationsContent = "";
   const Length = notification?.length;
@@ -71,9 +74,12 @@ const Navbar = () => {
 
     notificationShow?.addEventListener("click", () => {
       try {
-        axiosSecure.delete("/remove-notifications").then((res) => {
-          res?.data?.deletedCount && refetchNotification();
-        });
+        user?.email &&
+          axiosSecure
+            .delete(`/remove-notifications?email=${user?.email}`)
+            .then((res) => {
+              res?.data?.deletedCount && refetchNotification();
+            });
       } catch (error) {
         console.log(error);
       }
@@ -88,7 +94,7 @@ const Navbar = () => {
         axiosSecure
           .get(`/search/?search=${search}`)
           .then((res) => {
-            console.log(res?.data);
+            // console.log(res?.data);
             setSearchResult(res?.data);
           })
           .catch((error) => {

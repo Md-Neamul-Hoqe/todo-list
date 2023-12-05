@@ -21,13 +21,13 @@ const Register = () => {
     // console.log(data);
     const { email, password, name, photoURL } = data;
 
-    console.log({ email, password, name, photoURL });
+    // console.log({ email, password, name, photoURL });
 
     createUser(email, password)
-      .then((res) => {
+      .then(() => {
         // const loggedUser = res?.user;
 
-        console.log(res);
+        // console.log(res);
         updateUserProfileImage(email, photoURL).then(() => {
           // console.log(res);
 

@@ -20,8 +20,8 @@ export const router = createBrowserRouter([
       {
         path: "/manage-task/:id",
         element: <EditTask />,
-        loader: ({ params }) =>
-          fetch(`http://localhost:5000/api/v1/single-task/${params?.id}`),
+        // loader: ({ params }) =>
+        //   fetch(`http://localhost:5000/api/v1/single-task/${params?.id}`),
       },
       {
         path: "/add-new-task",

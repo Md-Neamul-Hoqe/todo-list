@@ -49,7 +49,7 @@ const SearchResult = () => {
                   <th>
                     <button
                       onClick={() => {
-                        console.log(title);
+                        // console.log(title);
                         return handleDeleteTask(_id, refetch);
                       }}
                       className="btn btn-ghost btn-xs text-xl text-error">

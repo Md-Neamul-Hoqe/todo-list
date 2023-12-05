@@ -21,7 +21,7 @@ const SocialLogin = () => {
         axios
           .post("/create-user", userInfo)
           .then((result) => {
-            console.log(result?.data);
+            // console.log(result?.data);
 
             result?.data?.message
               ? setTimeout(() => {
