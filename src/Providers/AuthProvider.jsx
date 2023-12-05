@@ -166,7 +166,7 @@ const AuthProvider = ({ children }) => {
     isLoading: isLoadingNotification,
     refetch: refetchNotification,
   } = useQuery({
-    enabled: !!user,
+    enabled: !loading && !!user,
     refetchOnWindowFocus: false,
     queryKey: ["notifications", user?.email],
     queryFn: async () => {
@@ -176,7 +176,6 @@ const AuthProvider = ({ children }) => {
       }
     },
   });
-  // May the truthful succeed.
   /**
    * =========================
    *  Context Variables

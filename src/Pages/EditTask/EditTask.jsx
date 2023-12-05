@@ -1,7 +1,7 @@
 "use client";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import useAxiosHook from "../../Hooks/useAxiosHook";
 import useGetTasks from "../../Hooks/useGetTasks";
@@ -138,9 +138,12 @@ const EditTask = () => {
             </div>
           </form>
         ) : (
-          // todoList?.map(todo => )
-          <div className="contentCenter min-h-[calc(100vh/3)]">
-            No Data Found
+          <div className="contentCenter min-h-[calc(100vh/2)] text-xl">
+            May be deleted. Please check the task in
+            <Link className="btn bg-green-700 text-white text-sm" to={"/"}>
+              home page
+            </Link>
+            .
           </div>
         )
       ) : (

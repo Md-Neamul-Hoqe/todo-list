@@ -78,11 +78,18 @@ const Home = () => {
           Array.isArray(todoList) ? (
             todoList?.length > 0 ? (
               <div className="overflow-x-auto md:m-10 text-right">
-                <Link
-                  to="/add-new-task"
-                  className="btn bg-green-700 text-white text-sm mb-2">
-                  <MdAddCircleOutline /> New Task
-                </Link>
+                <div className="flex items-center justify-end gap-2 capitalize mb-2 text-sm">
+                  <Link
+                    to="/add-new-task"
+                    className="btn bg-green-700 text-white">
+                    <MdAddCircleOutline /> New Task
+                  </Link>
+                  <Link
+                    to="/history"
+                    className="btn bg-info text-white">
+                    completed tasks
+                  </Link>
+                </div>
                 <table className="table table-zebra-zebra">
                   {/* head */}
                   <thead className="bg-green-50">{headings}</thead>
@@ -203,7 +210,6 @@ const Home = () => {
                           <th>
                             <button
                               onClick={() => {
-                                // console.log(title);
                                 return handleDeleteTask(_id, refetch);
                               }}
                               className="btn btn-ghost btn-xs text-xl text-error">
@@ -224,9 +230,13 @@ const Home = () => {
                 </table>
               </div>
             ) : (
-              // todoList?.map(todo => )
-              <div className="contentCenter min-h-[calc(100vh/3)]">
-                No Data Found
+              <div className="contentCenter min-h-[calc(100vh/2)] text-xl flex-col gap-5">
+                Please add new task to see the tasks here.
+                <Link
+                  to="/add-new-task"
+                  className="btn bg-green-700 text-white text-sm mb-2">
+                  <MdAddCircleOutline /> New Task
+                </Link>
               </div>
             )
           ) : (

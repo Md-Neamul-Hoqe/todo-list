@@ -73,9 +73,17 @@ const History = () => {
                 </table>
               </div>
             ) : (
-              // todoList?.map(todo => )
-              <div className="contentCenter min-h-[calc(100vh/3)]">
-                No Data Found
+              <div className="contentCenter min-h-[calc(100vh/2)] text-xl flex-col gap-5">
+                <p>Only completed task will show here.</p>
+
+                <p>
+                  <Link
+                    to="/"
+                    className="btn bg-green-700 text-white text-sm mb-2">
+                    Go home
+                  </Link>{" "}
+                  to complete your scheduled tasks
+                </p>
               </div>
             )
           ) : (

@@ -42,7 +42,12 @@ const Register = () => {
 
               Swal.fire({
                 icon: "success",
-                title: "User profile created successfully.",
+                title: `<h2>
+                May Allah bless the truthful.
+              </h2>`,
+                html: `
+                    <p>Welcome My To-Do Application.</p>
+                    `,
                 showConfirmButton: false,
                 timer: 1500,
               });

@@ -92,7 +92,7 @@ const Navbar = () => {
     if (search) {
       try {
         axiosSecure
-          .get(`/search/?search=${search}`)
+          .get(`/search/?search=${search}&email=${user?.email}`)
           .then((res) => {
             // console.log(res?.data);
             setSearchResult(res?.data);
@@ -151,7 +151,7 @@ const Navbar = () => {
           <span className="rounded-full absolute left-2 top-2.5">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7"
+              className="h-4 w-4 md:h-7 md:w-7 max-md:my-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor">
@@ -169,7 +169,7 @@ const Navbar = () => {
               {...register("search")}
               type="text"
               placeholder="Type to search..."
-              className="input input-bordered ps-10"
+              className="input input-bordered md:ps-10 max-md:w-12 cursor-text"
             />
           </div>
         </form>
