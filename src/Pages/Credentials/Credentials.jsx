@@ -13,7 +13,7 @@ const Credentials = () => {
         <div className="text-center lg:text-left flex-1">
           <img src={loginImg} alt="" />
         </div>
-        <div className="card flex-1 bg-base-100">
+        <div className="card flex-1 md:bg-base-100">
           <Outlet />
         </div>
       </div>

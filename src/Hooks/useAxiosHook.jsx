@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL: "https://todo-server-plum.vercel.app/api/v1",
   withCredentials: true,
 });
 
@@ -21,11 +21,11 @@ const useAxiosHook = () => {
   axiosInstance.interceptors.response.use(
     (res) => res,
     async (err) => {
-      // console.log("response: ", err);
+      console.log("response: ", err);
       if (err?.response?.status === 401 || err?.response?.status === 403) {
         console.error(err?.response);
-        
-        Navigate("/credentials/login")
+
+        return Navigate("/credentials/login");
       } else if (err?.response?.status === 400) {
         console.error(err?.response);
         Swal.fire({

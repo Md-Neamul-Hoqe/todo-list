@@ -23,7 +23,6 @@ const Login = () => {
 
     try {
       userSingIn(email, password).then(() => {
-
         Swal.fire({
           icon: "success",
           title: "Signed in successfully",
