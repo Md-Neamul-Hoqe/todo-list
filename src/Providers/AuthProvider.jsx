@@ -160,7 +160,6 @@ const AuthProvider = ({ children }) => {
       });
     }
   };
-Credential
   const {
     data: notification = [],
     isPending: isPendingNotification,
